@@ -2,6 +2,17 @@
 
 A project by Eric George, Roko Condic, and Bassel Hasan. It will track professional football teams and players and they're data, presenting them in a fun and fan-oriented manner.
 
+# Information
+
+Frontend: Flutter (with dart, targeted for web deployment)
+Backend: Django
+Database: MySQL local
+RESTful API
+
+Please add your design boards, drafts, or other ideas you have here.
+
+All work should be committed to specific branches, and merged onto main. BE WARY OF MERGE CONFLICTS. Don't accept merges easily and overwrite another person's work. Ideally someone should review all pull requests, but this will not be enforced.
+
 # Setup
 
 ## Installing Django
