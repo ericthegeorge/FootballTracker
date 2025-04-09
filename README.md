@@ -142,4 +142,6 @@ We should update this readme if anyone finds issues with setup or development, o
 
 If you're ever stuck, you can refer to some example code (that is, my Cardfight Vanguard project on github) that shares similar structure (I wonder why 💯). It can help give you some direction, although I will say the structure is very inefficient and improper there, so consult the official development guidelines, API, and other online resources as well.
 
+Also, make sure you are pulling before you work and commit, it's important you work on the most up to date code.
+
 Hopefully the setup goes smoothly for everyone. Development is the fun part so let's enjoy it! 🙌
