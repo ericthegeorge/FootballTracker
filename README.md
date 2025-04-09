@@ -23,7 +23,10 @@ Once you're in, create the schema for our FootballTracker database. Right-click 
 ![image](https://github.com/user-attachments/assets/587a1ccc-38d3-4b3e-be6f-d313ca72fe66)
 
 ## Adding Your Environment Variables
-Once this is done, you'll want to head back over to our code in your IDE. Create your own .env file (explicity just '.env') in the Backend folder, beside manage.py and the footballtracker folder. This is personal information, so it's added to the gitignore and will not be committed into the repository. Add your details here like so:
+Once this is done, you'll want to head back over to our code in your IDE. Create your own .env file (explicity just '.env') in the Backend folder, beside manage.py and the footballtracker folder. 
+![image](https://github.com/user-attachments/assets/bb6a5502-13c7-423f-af78-2146c2179301)
+
+This is personal information, so it's added to the gitignore and will not be committed into the repository. Add your details here like so:
 
 `
 DB_NAME= THE_name_WOW
@@ -35,4 +38,26 @@ DB_PORT= 3306
 
 This allows each of us to maintain our local instance of the database, without interfering with each other's configurations. Since we're only deploying locally for a test, this is the easiest way to go for now. We can consider database sharing later, as it isn't relevant to development right now. If need be for some test data, we can send the csv's (or other file formats) to share the data.
 
-![image](https://github.com/user-attachments/assets/bb6a5502-13c7-423f-af78-2146c2179301)
+Finally, you're going to run the following commands in your terminal (in the root folder of "FootballTracker/Backend"):
+
+`python manage.py makemigrations
+python manage.py migrate`
+
+This will setup Django's authentication models in our schema.
+
+## Further Information on Django
+
+Most of the backend functionality for local deployment will come from running some arguments on manage.py. The manage.py file is what calls the code, and we do actions by giving it the proper args (in command line), like makemigrations or runserver. Below are some important Django commands.
+
+`python manage.py runserver`
+Starts a lightweight development web server on the local machine. By default, the server runs on the IP address 127.0.0.1. You can pass in an IP address and port number explicitly. Use this when you want to test (locally).
+
+`python manage.py makemigrations`
+Creates new migrations based on the changes detected to your models. Migrations, their relationship with apps and more are covered in depth in the migrations documentation in the link below. Models are essentially tables from our database.  We interact with them through the Models we create in Django.
+
+`python manage.py migrate`
+Synchronizes the database state with the current set of models and migrations. Migrations, their relationship with apps and more are covered in depth in the migrations documentation in the link below.
+
+[Django/Python documentation](https://docs.djangoproject.com/en/5.1/ref/django-admin/) (the commands differ, but generally use the name as the cmd line argument for manage.py).
+
+To be continued...
