@@ -79,7 +79,7 @@ If it works, you're all ready for development!
 
 You can find general documentation for Flutter at: https://docs.flutter.dev/ \
 Detailed API documentation is available at: https://api.flutter.dev/ \
-If you prefer video documentation, consider: https://www.youtube.com/c/flutterdev \
+If you prefer video documentation, consider: https://www.youtube.com/c/flutterdev 
 
 # Development 🙌
 
