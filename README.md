@@ -85,12 +85,34 @@ If you prefer video documentation, consider: https://www.youtube.com/c/flutterde
 
 ## Database Development
 
+Most of the database development you'll be doing is in the Django code. Specifically, Backend/footballtracker/models.py (and a little bit in admin.py). Take a look at the docs and api to understand the structure. I also added an example with a primary key and a foreign key to help.
+
 ## Backend Development
+
+There's a few key files here where you'll devote most of your time. In Backend: views.py, serializers.py; and in footballtracker: urls.py and settings.py. We're using a REST framework, which basically means our frontend calls a link with some info, and we put our response on that link. We setup the urls to call in urls, the data parsing is in serializers (for sending and receiving JSON's), and the views.py is where the logic of the response is. Settings is for anything you might change, as I'm sure you may find things are insufficient. I'll add an example across these to show what it could look like. The example is with user registration, although please note you cannot use this implementation example, and you'll probably need to design a different scheme where we actually use proper security instead of having the password in the payload of the https request.
 
 ## Frontend Development
 
+Frontend probably looks the most confusing, but fear not! If you wanted to (although I would be greatly aggrieved if you did), you could do all your frontend work in one file! This important file is your main.dart (specifically, frontend/lib/main.dart). The code will run main, which creates your Flutter App struct, called MyApp. It's a stateless widget altogther, although you can have states within or even alter it's stateless nature. You may also create some files to add your App's structure. As well, an api_service could be helpful in managing the backend rest framework which you will use for backend interactions. I'll provide an example api service, although it may not be effective for our backend. 
+
+For adding dependencies (imports and the like), you'll need to add them under dev_dependencies in the pubspec.yaml file. This file should be in the root of frontend. 
+Flutter commands to build and clean:
+
+`flutter clean`
+`flutter pub get`
+
+Command to update your flutter and it's SDK:
+
+ `flutter upgrade` 
+
+ Command to 'doctor' your flutter issues:
+
+`flutter doctor`
+
 # Other Notes
 
-We should update this readme if anyone finds issues with setup or development, or finds anything else to contribute. It's important we do this so the information is shared and we can work efficiently. It's like commenting but 10x better (worse). But it's important 😭. Hopefully the setup goes smoothly for everyone. Development is the fun part so let's enjoy it! 🙌
+We should update this readme if anyone finds issues with setup or development, or finds anything else to contribute. It's important we do this so the information is shared and we can work efficiently. It's like commenting but 10x better (worse). But it's important 😭. 
 
-To be continued...
+If you're ever stuck, you can refer to some example code (that is, my Cardfight Vanguard project on github) that shares similar structure (I wonder why 💯). It can help give you some direction, although I will say the structure is very inefficient and improper there, so consult the official development guidelines, API, and other online resources as well.
+
+Hopefully the setup goes smoothly for everyone. Development is the fun part so let's enjoy it! 🙌
