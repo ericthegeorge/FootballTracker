@@ -23,6 +23,7 @@ Assuming you have python installed, which is the base language for Django, you c
 `pip install djangorestframework`
 `pip install mysqlclient`
 `pip install python-dotenv`
+`pip install Pillow`
 
 Next, open your MySQL workbench. If you don't have it installed already, you can install it [here](https://dev.mysql.com/downloads/mysql/).
 
