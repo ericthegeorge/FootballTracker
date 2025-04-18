@@ -30,6 +30,8 @@ SECRET_KEY = 'django-insecure-l+9806ndoeg#=bxju7h3ar55_2h+z#$qec3tp=cqu7u_+xqkh+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# AUTH_USER_MODEL = 'footballtracker.CustomUser'
+
 ALLOWED_HOSTS = []
 
 

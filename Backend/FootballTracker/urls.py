@@ -1,6 +1,5 @@
 from django.urls import path
-from .views import PackOpenerView, UserDecksListAndCreateView, UserDeckDetailView
-from .views import AllCardsView, UserProfileView, LoginView, RegisterView, UserCardsView
+# from .views import ...
 
 
 urlpatterns = [
