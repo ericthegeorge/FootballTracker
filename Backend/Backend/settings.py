@@ -18,7 +18,8 @@ load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -28,6 +29,8 @@ SECRET_KEY = 'django-insecure-l+9806ndoeg#=bxju7h3ar55_2h+z#$qec3tp=cqu7u_+xqkh+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+
+# AUTH_USER_MODEL = 'footballtracker.CustomUser'
 
 ALLOWED_HOSTS = []
 
@@ -43,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'footballtracker',
+    'django_countries',
 ]
 
 MIDDLEWARE = [
