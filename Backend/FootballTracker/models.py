@@ -22,7 +22,6 @@ class Card(models.Model):
 
 '''
 
-
 def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/profile_images/<username>/<filename>
     return f'profile_images/{instance.user.username}/{filename}'
@@ -181,23 +180,44 @@ class PlayerMatchData(models.Model):
     fouls = models.IntegerField()
     goals_conceded = models.IntegerField()
     saves = models.IntegerField()
-    position = models.CharField(max_length=50)
+    position = models.CharField(max_length=2,
+                                choices=Position.choices,
+                                default=Position.MIDFIELDER)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['match', 'player'], name='unique_player_match_data_match_player')
+        ]
 
 class PlayerPlaysForTeam(models.Model):
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     shirt_number = models.IntegerField()
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['player', 'team'], name='unique_player_plays_for_team_player_team')
+        ]
 
 
 class TeamPlaysInLeague(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     league = models.ForeignKey(League, on_delete=models.CASCADE)
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['team', 'league'], name='unique_team_plays_in_league_team_league')
+        ]
 
 
 class MatchHeldInLeague(models.Model):
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
     league = models.ForeignKey(League, on_delete=models.CASCADE)
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['match', 'league'], name='unique_match_held_in_league_match_league')
+        ]
 
 
 class TeamMatchDataGoal(models.Model):
@@ -207,12 +227,22 @@ class TeamMatchDataGoal(models.Model):
     assisting_player = models.CharField(max_length=100)
     time_scored = models.TimeField()
     scoring_player = models.CharField(max_length=100)
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['match', 'team', 'goal_type', 'assisting_player', 'time_scored', 'scoring_player'], name='unique_team_match_data_goal')
+        ]
 
 
 class TeamMatchDataBooking(models.Model):
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     time_booked = models.TimeField()
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['match', 'team', 'time_booked'], name='unique_team_match_data_booking')
+        ]
 
 
 class TeamMatchDataSubstitution(models.Model):
@@ -221,6 +251,11 @@ class TeamMatchDataSubstitution(models.Model):
     player_on = models.CharField(max_length=100)
     player_off = models.CharField(max_length=100)
     time_subbed = models.TimeField()
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['match', 'team', 'player_on', 'player_off', 'time_subbed'], name='unique_team_match_data_substitution')
+        ]
 
 
 class PlayerMatchDataGoal(models.Model):
@@ -231,11 +266,20 @@ class PlayerMatchDataGoal(models.Model):
     time_scored = models.TimeField()
     scoring_player = models.CharField(max_length=100)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['match', 'player', 'goal_type', 'assisting_player', 'time_scored', 'scoring_player'], name='unique_player_match_data_goal')
+        ]
 
 class PlayerMatchDataBooking(models.Model):
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
     time_booked = models.TimeField()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['match', 'player', 'time_booked'], name='unique_player_match_data_booking')
+        ]
 
 
 class PlayerMatchDataSubstitution(models.Model):
@@ -244,70 +288,145 @@ class PlayerMatchDataSubstitution(models.Model):
     player_on = models.CharField(max_length=100)
     player_off = models.CharField(max_length=100)
     time_subbed = models.TimeField()
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['match', 'player', 'player_on', 'player_off', 'time_subbed'], name='unique_player_match_data_substitution')
+        ]
 
 
 class AdminCanEditTeamMatchData(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'match', 'team'], name='unique_admin_edit_team_match_data')
+        ]
 
 class AdminCanEditPlayerMatchData(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'match', 'player'], name='unique_admin_edit_player_match_data')
+        ]
 
 class AdminCanEditPlayer(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'player'], name='unique_admin_edit_player')
+        ]
 
 class AdminCanEditTeam(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'team'], name='unique_admin_edit_team')
+        ]
 
 class AdminCanEditMatch(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'match'], name='unique_admin_edit_match')
+        ]
 
 
 class AdminCanEditLeague(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     league = models.ForeignKey(League, on_delete=models.CASCADE)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'league'], name='unique_admin_edit_league')
+        ]
 
-class UserCanBrowseMatchData(models.Model):
+''''''
+
+class UserCanBrowseTeamMatchData(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
-    name = models.CharField(max_length=100)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'match', 'team'], name='unique_user_browse_team_match_data')
+        ]
 
+class UserCanBrowsePlayerMatchData(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    match = models.ForeignKey(Match, on_delete=models.CASCADE)
+    player = models.ForeignKey(Player, on_delete=models.CASCADE)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'match', 'player'], name='unique_user_browse_player_match_data')
+        ]
 
 class UserCanBrowsePlayer(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'player'], name='unique_user_browse_player')
+        ]
 
 class UserCanBrowseTeam(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'team'], name='unique_user_browse_team')
+        ]
 
 class UserCanBrowseMatch(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'match'], name='unique_user_browse_match')
+        ]
 
 
 class UserCanBrowseLeague(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     league = models.ForeignKey(League, on_delete=models.CASCADE)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'league'], name='unique_user_browse_league')
+        ]
+
+''''''
 
 class TeamMatch(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['team', 'match'], name='unique_team_match')
+        ]
 
 class PlayerMatch(models.Model):
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['player', 'match'], name='unique_player_match')
+        ]
