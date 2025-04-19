@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django_countries.fields import CountryField
 # Create your models here.
 
 # EXAMPLE HERE YOUR MOST WELCOME:
@@ -13,14 +14,23 @@ class Card(models.Model):
     user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name="decks")
 '''
 
+# country field for nationality example use:
+'''
+{{ player.nationality.name }}  <!-- e.g., "Germany" -->
+{{ player.nationality.code }}  <!-- e.g., "DE" -->
+{{ player.nationality.flag }}  <!-- 🌍 URL or emoji-like flag -->
+
+'''
+
+
 def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/profile_images/<username>/<filename>
     return f'profile_images/{instance.user.username}/{filename}'
 
-
+# specifically for pf image to Django premade user relation
 class UserProfile(models.Model):
     # includes username, password, email, and more
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     profile_image = models.ImageField(upload_to=user_directory_path, null=True, blank=True)
     
     def __str__(self):
@@ -52,17 +62,21 @@ class Player(models.Model):
     red_cards = models.IntegerField()
     playing_team = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True, related_name='playing_players')
     owning_team = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True, related_name='owning_players')
+    # class Meta:
+    #     constraints = [
+    #         models.UniqueConstraint(fields=['player_id', 'name'], name='unique_player_id_name')
+    #     ]
 
 
 class OutfieldPlayer(models.Model):
-    player = models.OneToOneField(Player, on_delete=models.CASCADE, primary_key=True)
+    player = models.OneToOneField(Player, on_delete=models.CASCADE, primary_key=True, related_name='outfield_players')
     goals = models.IntegerField()
     assists = models.IntegerField()
     penalties_scored = models.IntegerField()
 
 
 class Goalkeeper(models.Model):
-    player = models.OneToOneField(Player, on_delete=models.CASCADE, primary_key=True)
+    player = models.OneToOneField(Player, on_delete=models.CASCADE, primary_key=True, related_name='goalkeeper_players')
     goals_conceded = models.IntegerField()
     goals_saved = models.IntegerField()
     clean_sheets = models.IntegerField()
@@ -70,18 +84,41 @@ class Goalkeeper(models.Model):
 
 
 class PlayerNationality(models.Model):
-    player = models.ForeignKey(Player, on_delete=models.CASCADE)
-    nationality = models.CharField(max_length=50)
+    player = models.ForeignKey(Player, on_delete=models.CASCADE, primary_key=True)
+    nationality = CountryField()
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['player', 'nationality'], name='unique_player_nationality')
+        ]
+
+class Position(models.TextChoices):
+    GOALKEEPER = 'GK', 'Goalkeeper'
+    DEFENDER = 'DF', 'Defender'
+    MIDFIELDER = 'MF', 'Midfielder'
+    FORWARD = 'FW', 'Forward'
 
 class PlayerPosition(models.Model):
-    player = models.ForeignKey(Player, on_delete=models.CASCADE)
-    position = models.CharField(max_length=50)
+    player = models.ForeignKey(Player, on_delete=models.CASCADE, primary_key=True)
+    position = models.CharField(max_length=2,
+                                choices=Position.choices,
+                                default=Position.MIDFIELDER)
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['player', 'position'], name='unique_player_nationality')
+        ]
+
 
 
 class ManagerNationality(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
-    nationality = models.CharField(max_length=50)
+    nationality = CountryField()
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['team', 'nationality'], name='unique_team_manager_nationality')
+        ]
+
 
 
 class Match(models.Model):
@@ -96,11 +133,17 @@ class Match(models.Model):
 
 class MatchRefereeNationality(models.Model):
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
-    nationality = models.CharField(max_length=50)
+    nationality = CountryField()
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['match', 'nationality'], name='unique_match_referee_nationality')
+        ]
+
 
 
 class TeamMatchData(models.Model):
-    match = models.ForeignKey(Match, on_delete=models.CASCADE)
+    match = models.ForeignKey(Match, on_delete=models.CASCADE, primary_key=True)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     stoppage_time = models.IntegerField()
     had_extra_time = models.BooleanField()
@@ -115,6 +158,11 @@ class TeamMatchData(models.Model):
     total_passes = models.IntegerField()
     match_outcome = models.CharField(max_length=10)
     team_formation = models.CharField(max_length=20)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['match', 'team'], name='unique_match_data_match_team')
+        ]
 
 
 class PlayerMatchData(models.Model):
