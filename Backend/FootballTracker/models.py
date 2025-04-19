@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django_countries.fields import CountryField
+# from django_countries import 
 # Create your models here.
 
 # EXAMPLE HERE YOUR MOST WELCOME:
@@ -84,7 +85,7 @@ class Goalkeeper(models.Model):
 
 class PlayerNationality(models.Model):
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
-    nationality = CountryField()
+    nationality = CountryField(default='US')
 
     class Meta:
         constraints = [
@@ -104,14 +105,14 @@ class PlayerPosition(models.Model):
                                 default=Position.MIDFIELDER)
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['player', 'position'], name='unique_player_nationality')
+            models.UniqueConstraint(fields=['player', 'position'], name='unique_player_position')
         ]
 
 
 
 class ManagerNationality(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
-    nationality = CountryField()
+    nationality = CountryField(default='US')
     
     class Meta:
         constraints = [
@@ -132,7 +133,7 @@ class Match(models.Model):
 
 class MatchRefereeNationality(models.Model):
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
-    nationality = CountryField()
+    nationality = CountryField(default='US')
     
     class Meta:
         constraints = [
