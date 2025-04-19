@@ -83,7 +83,7 @@ class Goalkeeper(models.Model):
 
 
 class PlayerNationality(models.Model):
-    player = models.ForeignKey(Player, on_delete=models.CASCADE, primary_key=True)
+    player = models.ForeignKey(Player, on_delete=models.CASCADE)
     nationality = CountryField()
 
     class Meta:
@@ -98,7 +98,7 @@ class Position(models.TextChoices):
     FORWARD = 'FW', 'Forward'
 
 class PlayerPosition(models.Model):
-    player = models.ForeignKey(Player, on_delete=models.CASCADE, primary_key=True)
+    player = models.ForeignKey(Player, on_delete=models.CASCADE)
     position = models.CharField(max_length=2,
                                 choices=Position.choices,
                                 default=Position.MIDFIELDER)
@@ -142,7 +142,7 @@ class MatchRefereeNationality(models.Model):
 
 
 class TeamMatchData(models.Model):
-    match = models.ForeignKey(Match, on_delete=models.CASCADE, primary_key=True)
+    match = models.ForeignKey(Match, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     stoppage_time = models.IntegerField()
     had_extra_time = models.BooleanField()
