@@ -5,8 +5,8 @@ A project by Eric George, Roko Condic, and Bassel Hasan. It will track professio
 # Information
 
 Frontend: Flutter (with dart, targeted for web deployment) \
-Backend: Django
-Database: MySQL local
+Backend: Django\
+Database: MySQL local\
 RESTful API
 
 Please add your design boards, drafts, or other ideas you have here.
