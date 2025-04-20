@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'footballtracker',
     'django_countries',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
