@@ -14,7 +14,7 @@ Please add your design boards, drafts, or other ideas you have here.
 All work should be committed to specific branches, and merged onto main. BE WARY OF MERGE CONFLICTS. Don't accept merges easily and overwrite another person's work. Ideally someone should review all pull requests, but this will not be enforced.
 
 # Setup
-Note: Make sure you are in developer mode turned on for Windows (or equivalent for other systems).
+Note: make sure developer mode is turned on for Windows (or equivalent for other systems).
 ## Installing Django
 
 Assuming you have python installed, which is the base language for Django, you can run the following commands in terminal:
