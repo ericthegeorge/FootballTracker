@@ -23,6 +23,8 @@ Assuming you have python installed, which is the base language for Django, you c
 `pip install djangorestframework`
 `pip install mysqlclient`
 `pip install python-dotenv`
+`pip install Pillow`
+`pip install django-countries`
 
 Next, open your MySQL workbench. If you don't have it installed already, you can install it [here](https://dev.mysql.com/downloads/mysql/).
 
@@ -124,7 +126,7 @@ Command to 'doctor' your flutter issues:
 
 # Testing
 
-Testing here is pretty simple. Once you've saved all your changes - made migrations and migrated it in Django, and saved all your code - then open up two command line terminals (you can do this within your IDE, it should work fine). In the first one, cd into Backend, and run 
+Testing here is pretty simple. Once you've saved all your changes - made migrations and migrated it in Django, and saved all your code - then open up two command line terminals (you can do this within your IDE, it should work fine). In the first one, cd into Backend, and run
 `python manage.py runserver`
 
 This starts up the backend server (locally) so the frontend can start making requests.
@@ -132,7 +134,7 @@ This starts up the backend server (locally) so the frontend can start making req
 To start up your flutter app, just run
 `flutter run`
 
-It'll prompt you for which device you want to deploy to, just enter the number associated to web or desktop (web might be faster to build and it's also what we'll present). Then you should see your flutter app, and any interaction with the backend should be successful (provided, your code is not bugged). 
+It'll prompt you for which device you want to deploy to, just enter the number associated to web or desktop (web might be faster to build and it's also what we'll present). Then you should see your flutter app, and any interaction with the backend should be successful (provided, your code is not bugged).
 
 Happy testing! 😁
 
