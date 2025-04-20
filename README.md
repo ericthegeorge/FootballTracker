@@ -127,6 +127,7 @@ Command to 'doctor' your flutter issues:
 # Testing
 
 Testing here is pretty simple. Once you've saved all your changes - made migrations and migrated it in Django, and saved all your code - then open up two command line terminals (you can do this within your IDE, it should work fine). In the first one, cd into Backend, and run
+
 `python manage.py runserver`
 
 This starts up the backend server (locally) so the frontend can start making requests.
