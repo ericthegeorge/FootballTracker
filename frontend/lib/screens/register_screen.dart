@@ -1,0 +1,94 @@
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import '../services/auth_service.dart';
+import 'package:frontend/routes.dart';
+
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
+
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
+  final usernameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  String error = '';
+
+  void registerUser() async {
+    final response = await AuthService.register(
+      usernameController.text,
+      emailController.text,
+      passwordController.text,
+    );
+    print("Status code: ${response.statusCode}");
+    print("Body: ${response.body}");
+    if (response.statusCode == 201) {
+      // Success! Navigate to login
+      Navigator.pushReplacementNamed(context, Routes.login);
+    } else {
+      final responseData = jsonDecode(response.body);
+      String errormsg = _getErrorMessage(responseData);
+      setState(() {
+        error = 'Registration failed: $errormsg';
+      });
+    }
+  }
+
+  String _getErrorMessage(Map<String, dynamic> responseData) {
+    // Check if the error is related to the email field
+    if (responseData.containsKey('email')) {
+      return responseData['email'][0]; // Return the first error for the email field
+    }
+    // Check if the error is related to the username field
+    if (responseData.containsKey('username')) {
+      return responseData['username'][0]; // Return the first error for the username field
+    }
+    // Check if the error is related to the password field
+    if (responseData.containsKey('password')) {
+      return responseData['password'][0]; // Return the first error for the password field
+    }
+
+    // If no specific error, return a generic message
+    return 'An error occurred. Please try again.';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Register')),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            TextField(
+              controller: usernameController,
+              decoration: const InputDecoration(labelText: 'Username'),
+            ),
+            TextField(
+              controller: emailController,
+              decoration: const InputDecoration(labelText: 'Email'),
+            ),
+            TextField(
+              controller: passwordController,
+              obscureText: true,
+              decoration: const InputDecoration(labelText: 'Password'),
+            ),
+            const SizedBox(height: 12),
+            ElevatedButton(
+              onPressed: registerUser,
+              child: const Text('Register'),
+            ),
+            Text(error, style: const TextStyle(color: Colors.red)),
+            TextButton(
+              onPressed: () => Navigator.pushNamed(context, Routes.login),
+              child: const Text('Already have an account? Login'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
