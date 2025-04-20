@@ -15,6 +15,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final usernameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final firstNameController = TextEditingController();
+  final lastNameController = TextEditingController();
+
   String error = '';
 
   void registerUser() async {
@@ -22,6 +25,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       usernameController.text,
       emailController.text,
       passwordController.text,
+      firstNameController.text,
+      lastNameController.text,
     );
     print("Status code: ${response.statusCode}");
     print("Body: ${response.body}");
@@ -75,6 +80,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
               controller: passwordController,
               obscureText: true,
               decoration: const InputDecoration(labelText: 'Password'),
+            ),
+            TextFormField(
+              controller: firstNameController,
+              decoration: InputDecoration(labelText: 'First Name'),
+            ),
+
+            TextFormField(
+              controller: lastNameController,
+              decoration: InputDecoration(labelText: 'Last Name'),
             ),
             const SizedBox(height: 12),
             ElevatedButton(

@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:developer';
+// import 'dart:developer';
 import 'package:http/http.dart' as http;
 
 class AuthService {
@@ -17,10 +17,12 @@ class AuthService {
     String username,
     String email,
     String password,
+    String firstname,
+    String lastname,
   ) {
-    print(
-      jsonEncode({'username': username, 'email': email, 'password': password}),
-    );
+    // print(
+    //   jsonEncode({'username': username, 'email': email, 'password': password}),
+    // );
     return http.post(
       Uri.parse('$baseUrl/register/'),
       headers: {'Content-Type': 'application/json'},
@@ -28,6 +30,8 @@ class AuthService {
         'username': username,
         'email': email,
         'password': password,
+        'first_name': firstname,
+        'last_name': lastname,
       }),
     );
   }
