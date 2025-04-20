@@ -30,7 +30,7 @@ def user_directory_path(instance, filename):
 # specifically for pf image to Django premade user relation
 class UserProfile(models.Model):
     # includes username, password, email, and more
-    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name="profile")
     profile_image = models.ImageField(upload_to=user_directory_path, null=True, blank=True)
     
     def __str__(self):

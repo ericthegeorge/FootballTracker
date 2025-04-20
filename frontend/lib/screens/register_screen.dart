@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:frontend/routes.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -15,16 +17,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final usernameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final firstNameController = TextEditingController();
+  final lastNameController = TextEditingController();
+  File? _image;
+
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> _pickImage() async {
+    final picked = await _picker.pickImage(source: ImageSource.gallery);
+    if (picked != null) {
+      setState(() {
+        _image = File(picked.path);
+      });
+    }
+  }
+
   String error = '';
 
-  void registerUser() async {
+  Future<void> registerUser() async {
     final response = await AuthService.register(
       usernameController.text,
       emailController.text,
       passwordController.text,
+      firstNameController.text,
+      lastNameController.text,
+      _image,
     );
-    print("Status code: ${response.statusCode}");
-    print("Body: ${response.body}");
+    // print("Status code: ${response.statusCode}");
+    // print("Body: ${response.body}");
     if (response.statusCode == 201) {
       // Success! Navigate to login
       Navigator.pushReplacementNamed(context, Routes.login);
@@ -63,6 +83,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
+            const SizedBox(height: 12),
+            TextButton.icon(
+              onPressed: _pickImage,
+              icon: Icon(Icons.image),
+              label: Text('Pick Profile Picture'),
+            ),
+            if (_image != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Image.file(_image!, height: 100),
+              ),
             TextField(
               controller: usernameController,
               decoration: const InputDecoration(labelText: 'Username'),
@@ -75,6 +106,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
               controller: passwordController,
               obscureText: true,
               decoration: const InputDecoration(labelText: 'Password'),
+            ),
+            TextFormField(
+              controller: firstNameController,
+              decoration: InputDecoration(labelText: 'First Name'),
+            ),
+
+            TextFormField(
+              controller: lastNameController,
+              decoration: InputDecoration(labelText: 'Last Name'),
             ),
             const SizedBox(height: 12),
             ElevatedButton(
