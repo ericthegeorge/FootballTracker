@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/routes.dart';
+import 'leagues/leagues_screen.dart';
+import 'teams/teams_screen.dart';
+import 'players/players_screen.dart';
+import 'matches/matches_screen.dart';
+import 'account_settings_screen.dart';
 
 class MainSelectionScreen extends StatelessWidget {
   void navigateToScreen(BuildContext context, String screen) {
@@ -7,19 +12,19 @@ class MainSelectionScreen extends StatelessWidget {
       case 'league':
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => LeagueScreen()),
+          MaterialPageRoute(builder: (context) => LeaguesScreen()),
         );
         break;
       case 'team':
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => TeamScreen()),
+          MaterialPageRoute(builder: (context) => TeamsScreen()),
         );
         break;
       case 'player':
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => PlayerScreen()),
+          MaterialPageRoute(builder: (context) => PlayersScreen()),
         );
         break;
       case 'matches':
@@ -135,52 +140,3 @@ class MainSelectionScreen extends StatelessWidget {
 }
 
 // Dummy screens for each option
-class LeagueScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('League Screen')),
-      body: Center(child: Text('This is the League screen')),
-    );
-  }
-}
-
-class TeamScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Team Screen')),
-      body: Center(child: Text('This is the Team screen')),
-    );
-  }
-}
-
-class PlayerScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Player Screen')),
-      body: Center(child: Text('This is the Player screen')),
-    );
-  }
-}
-
-class MatchesScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Matches Screen')),
-      body: Center(child: Text('This is the Matches screen')),
-    );
-  }
-}
-
-class AccountSettingsScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Account Settings Screen')),
-      body: Center(child: Text('This is the Account Settings screen')),
-    );
-  }
-}
