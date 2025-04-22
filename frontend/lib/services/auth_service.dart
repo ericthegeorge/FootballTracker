@@ -21,6 +21,7 @@ class AuthService {
     String firstname,
     String lastname, [
     File? image, //optional
+    bool isAdmin = false,
   ]) async {
     var uri = Uri.parse('$baseUrl/register/');
     var request = http.MultipartRequest('POST', uri);
@@ -30,6 +31,9 @@ class AuthService {
     request.fields['password'] = password;
     request.fields['first_name'] = firstname;
     request.fields['last_name'] = lastname;
+    request.fields['is_staff'] = isAdmin.toString();
+
+    print(request);
 
     if (image != null) {
       request.files.add(
