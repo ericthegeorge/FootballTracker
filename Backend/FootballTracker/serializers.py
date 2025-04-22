@@ -37,8 +37,9 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'first_name', 'last_name', 'picture']
-        extra_kwargs = {'password': {'write_only':True}}
+        fields = ['username', 'email', 'password', 'first_name', 'last_name', 'picture', 'is_staff']
+        # read_only_fields = ['is_staff']
+        extra_kwargs = {'password': {'write_only':True}, 'is_staff': {'write_only':True}}
     
     def create(self, validated_data):
         user = User.objects.create_user(
@@ -55,6 +56,10 @@ class RegisterSerializer(serializers.ModelSerializer):
                 profile, _ = UserProfile.objects.get_or_create(user=user)
                 profile.picture = picture
                 profile.save()
+        is_staff = validated_data.pop('is_staff', None)
+        user.is_staff = is_staff
+        user.save()
+        print(user.is_staff)
         return user
     
 class LoginSerializer(serializers.Serializer):

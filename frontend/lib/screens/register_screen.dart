@@ -20,6 +20,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
   File? _image;
+  bool _isAdmin = false;
 
   final ImagePicker _picker = ImagePicker();
 
@@ -42,6 +43,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       firstNameController.text,
       lastNameController.text,
       _image,
+      _isAdmin,
     );
     // print("Status code: ${response.statusCode}");
     // print("Body: ${response.body}");
@@ -117,6 +119,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
               decoration: InputDecoration(labelText: 'Last Name'),
             ),
             const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Register as Admin'),
+                Switch(
+                  value: _isAdmin,
+                  onChanged: (bool newValue) {
+                    setState(() {
+                      _isAdmin = newValue;
+                    });
+                  },
+                ),
+              ],
+            ),
+
             ElevatedButton(
               onPressed: registerUser,
               child: const Text('Register'),
