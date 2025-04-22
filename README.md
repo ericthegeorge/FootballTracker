@@ -4,9 +4,9 @@ A project by Eric George, Roko Condic, and Bassel Hasan. It will track professio
 
 # Information
 
-Frontend: Flutter (with dart, targeted for web deployment)
-Backend: Django
-Database: MySQL local
+Frontend: Flutter (with dart, targeted for web deployment) \
+Backend: Django\
+Database: MySQL local\
 RESTful API
 
 Please add your design boards, drafts, or other ideas you have here.
@@ -14,7 +14,7 @@ Please add your design boards, drafts, or other ideas you have here.
 All work should be committed to specific branches, and merged onto main. BE WARY OF MERGE CONFLICTS. Don't accept merges easily and overwrite another person's work. Ideally someone should review all pull requests, but this will not be enforced.
 
 # Setup
-
+Note: make sure developer mode is turned on for Windows (or equivalent for other systems).
 ## Installing Django
 
 Assuming you have python installed, which is the base language for Django, you can run the following commands in terminal:
@@ -127,11 +127,13 @@ Command to 'doctor' your flutter issues:
 # Testing
 
 Testing here is pretty simple. Once you've saved all your changes - made migrations and migrated it in Django, and saved all your code - then open up two command line terminals (you can do this within your IDE, it should work fine). In the first one, cd into Backend, and run
+
 `python manage.py runserver`
 
 This starts up the backend server (locally) so the frontend can start making requests.
 
 To start up your flutter app, just run
+
 `flutter run`
 
 It'll prompt you for which device you want to deploy to, just enter the number associated to web or desktop (web might be faster to build and it's also what we'll present). Then you should see your flutter app, and any interaction with the backend should be successful (provided, your code is not bugged).

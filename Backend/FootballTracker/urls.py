@@ -1,11 +1,57 @@
 from django.urls import path
 from .views import RegisterView, LoginView
-# from .views import ...
-
+from .views import (
+    RegisterView, LoginView, UserProfileView, LeagueView, TeamView, PlayerView, OutfieldPlayerView, GoalkeeperView,
+    PlayerNationalityView, PlayerPositionView, ManagerNationalityView, MatchView,
+    MatchRefereeNationalityView, TeamMatchDataView, PlayerMatchDataView,
+    PlayerPlaysForTeamView, TeamPlaysInLeagueView, MatchHeldInLeagueView,
+    TeamMatchDataGoalView, TeamMatchDataBookingView, TeamMatchDataSubstitutionView,
+    PlayerMatchDataGoalView, PlayerMatchDataBookingView, PlayerMatchDataSubstitutionView,
+    AdminCanEditTeamMatchDataView, AdminCanEditPlayerMatchDataView, AdminCanEditPlayerView,
+    AdminCanEditTeamView, AdminCanEditMatchView, AdminCanEditLeagueView,
+    UserCanBrowseTeamMatchDataView, UserCanBrowsePlayerMatchDataView, UserCanBrowsePlayerView,
+    UserCanBrowseTeamView, UserCanBrowseMatchView, UserCanBrowseLeagueView,
+    TeamMatchView, PlayerMatchView
+)
 
 urlpatterns = [
     # EXAMPLE URL using the view as response
     path('register/', RegisterView.as_view(), name = 'register'),
     path('login/', LoginView.as_view(), name = 'login'),
-
+    path('user-profile/', UserProfileView.as_view(), name = 'user_profile'),
+    path('leagues/', LeagueView.as_view(), name = 'leagues'),
+    path('teams/', TeamView.as_view(), name = 'teams'),
+    path('players/', PlayerView.as_view(), name = 'players'),
+    path('outfield-players/', OutfieldPlayerView.as_view(), name = 'outfield_players'),
+    path('goalkeepers/', GoalkeeperView.as_view(), name = 'goalkeepers'),
+    path('player-nationalities/', PlayerNationalityView.as_view(), name = 'player_nationalities'),
+    path('player-positions/', PlayerPositionView.as_view(), name = 'player_positions'),
+    path('manager-nationalities/', ManagerNationalityView.as_view(), name = 'manager_nationalities'),
+    path('matches/', MatchView.as_view(), name = 'matches'),
+    path('match-referee-nationalities/', MatchRefereeNationalityView.as_view(), name = 'match_referee_nationalities'),
+    path('team-match-data/', TeamMatchDataView.as_view(), name = 'team_match_data'),
+    path('player-match-data/', PlayerMatchDataView.as_view(), name = 'player_match_data'),
+    path('player-plays-for-team/', PlayerPlaysForTeamView.as_view(), name = 'player_plays_for_team'),
+    path('team-plays-in-league/', TeamPlaysInLeagueView.as_view(), name = 'team_plays_in_league'),
+    path('match-held-in-league/', MatchHeldInLeagueView.as_view(), name = 'match_held_in_league'),
+    path('team-match-data-goal/', TeamMatchDataGoalView.as_view(), name = 'team_match_data_goal'),
+    path('team-match-data-booking/', TeamMatchDataBookingView.as_view(), name = 'team_match_data_booking'),
+    path('team-match-data-substitution/', TeamMatchDataSubstitutionView.as_view(), name = 'team_match_data_substitution'),
+    path('player-match-data-goal/', PlayerMatchDataGoalView.as_view(), name = 'player_match_data_goal'),
+    path('player-match-data-booking/', PlayerMatchDataBookingView.as_view(), name = 'player_match_data_booking'),
+    path('player-match-data-substitution/', PlayerMatchDataSubstitutionView.as_view(), name = 'player_match_data_substitution'),
+    path('admin-can-edit-team-match-data/', AdminCanEditTeamMatchDataView.as_view(), name = 'admin_can_edit_team_match_data'),
+    path('admin-can-edit-player-match-data/', AdminCanEditPlayerMatchDataView.as_view(), name = 'admin_can_edit_player_match_data'),
+    path('admin-can-edit-player/', AdminCanEditPlayerView.as_view(), name = 'admin_can_edit_player'),
+    path('admin-can-edit-team/', AdminCanEditTeamView.as_view(), name = 'admin_can_edit_team'),
+    path('admin-can-edit-match/', AdminCanEditMatchView.as_view(), name = 'admin_can_edit_match'),
+    path('admin-can-edit-league/', AdminCanEditLeagueView.as_view(), name = 'admin_can_edit_league'),
+    path('user-can-browse-team-match-data/', UserCanBrowseTeamMatchDataView.as_view(), name = 'user_can_browse_team_match_data'),
+    path('user-can-browse-player-match-data/', UserCanBrowsePlayerMatchDataView.as_view(), name = 'user_can_browse_player_match_data'),
+    path('user-can-browse-player/', UserCanBrowsePlayerView.as_view(), name = 'user_can_browse_player'),
+    path('user-can-browse-team/', UserCanBrowseTeamView.as_view(), name = 'user_can_browse_team'),
+    path('user-can-browse-match/', UserCanBrowseMatchView.as_view(), name = 'user_can_browse_match'),
+    path('user-can-browse-league/', UserCanBrowseLeagueView.as_view(), name = 'user_can_browse_league'),
+    path('team-match/', TeamMatchView.as_view(), name = 'team_match'),
+    path('player-match/', PlayerMatchView.as_view(), name = 'player_match')
 ]

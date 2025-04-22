@@ -22,7 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (response.statusCode == 200) {
       // handle success (e.g., save token, navigate)
-      Navigator.pushReplacementNamed(context, Routes.home);
+      Navigator.pushReplacementNamed(context, Routes.main_selection);
     } else {
       setState(() {
         error = 'Login failed. Check your credentials.';

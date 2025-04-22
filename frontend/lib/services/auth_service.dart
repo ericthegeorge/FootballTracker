@@ -1,6 +1,7 @@
 import 'dart:convert';
-import 'dart:developer';
+// import 'dart:developer';
 import 'package:http/http.dart' as http;
+import 'dart:io';
 
 class AuthService {
   static const String baseUrl = 'http://127.0.0.1:8000/api'; // testing url
@@ -17,18 +18,27 @@ class AuthService {
     String username,
     String email,
     String password,
-  ) {
-    print(
-      jsonEncode({'username': username, 'email': email, 'password': password}),
-    );
-    return http.post(
-      Uri.parse('$baseUrl/register/'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'username': username,
-        'email': email,
-        'password': password,
-      }),
-    );
+    String firstname,
+    String lastname, [
+    File? image, //optional
+  ]) async {
+    var uri = Uri.parse('$baseUrl/register/');
+    var request = http.MultipartRequest('POST', uri);
+
+    request.fields['username'] = username;
+    request.fields['email'] = email;
+    request.fields['password'] = password;
+    request.fields['first_name'] = firstname;
+    request.fields['last_name'] = lastname;
+
+    if (image != null) {
+      request.files.add(
+        await http.MultipartFile.fromPath('picture', image.path),
+      );
+    }
+
+    var streamedResponse = await request.send();
+    var response = await http.Response.fromStream(streamedResponse);
+    return response;
   }
 }
