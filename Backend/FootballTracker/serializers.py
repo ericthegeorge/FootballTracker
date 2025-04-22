@@ -15,22 +15,6 @@ from .models import (
     TeamMatch, PlayerMatch
 )
 
-'''
-EXAMPLE SERIALIZERS
-
-
-class CardSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Card
-        fields = '__all__'
-class UserProfileSerializer(serializers.ModelSerializer):
-    cards = CardSerializer(many =True)
-    class Meta:
-        model = UserProfile
-        fields = ['user', 'cards']
-        # no other user details
-'''
-
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     picture = serializers.ImageField(write_only=True, required=False)
@@ -81,9 +65,10 @@ class LoginSerializer(serializers.Serializer):
         return data
     
 class UserProfileSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField(read_only=True)
     class Meta:
         model = UserProfile
-        fields = ['user', 'picture']
+        fields = ['id', 'user', 'picture']
 
 class LeagueSerializer(serializers.ModelSerializer):
     class Meta:
@@ -91,23 +76,12 @@ class LeagueSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class TeamSerializer(serializers.ModelSerializer):
+    league = LeagueSerializer(read_only=True)
+    league_id = serializers.PrimaryKeyRelatedField(
+        queryset=League.objects.all(), source='league', write_only=True, required=False
+    )
     class Meta:
         model = Team
-        fields = '__all__'
-
-class PlayerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Player
-        fields = '__all__'
-
-class OutfieldPlayerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = OutfieldPlayer
-        fields = '__all__'
-
-class GoalkeeperSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Goalkeeper
         fields = '__all__'
 
 class PlayerNationalitySerializer(serializers.ModelSerializer):
@@ -120,12 +94,51 @@ class PlayerPositionSerializer(serializers.ModelSerializer):
         model = PlayerPosition
         fields = '__all__'
 
+class PlayerSerializer(serializers.ModelSerializer):
+    nationality = PlayerNationalitySerializer(read_only=True)
+    nationality_id = serializers.PrimaryKeyRelatedField(
+        queryset=PlayerNationality.objects.all(), source='nationality', write_only=True, required=False
+    )
+    position = PlayerPositionSerializer(read_only=True)
+    position_id = serializers.PrimaryKeyRelatedField(
+        queryset=PlayerPosition.objects.all(), source='position', write_only=True, required=False
+    )
+    class Meta:
+        model = Player
+        fields = '__all__'
+
+class OutfieldPlayerSerializer(serializers.ModelSerializer):
+    player = PlayerSerializer(read_only=True)
+    player_id = serializers.PrimaryKeyRelatedField(
+        queryset=Player.objects.all(), source='player', write_only=True, required=False
+    )
+    class Meta:
+        model = OutfieldPlayer
+        fields = '__all__'
+
+class GoalkeeperSerializer(serializers.ModelSerializer):
+    player = PlayerSerializer(read_only=True)
+    player_id = serializers.PrimaryKeyRelatedField(
+        queryset=Player.objects.all(), source='player', write_only=True, required=False
+    )
+    class Meta:
+        model = Goalkeeper
+        fields = '__all__'
+
 class ManagerNationalitySerializer(serializers.ModelSerializer):
     class Meta:
         model = ManagerNationality
         fields = '__all__'
 
 class MatchSerializer(serializers.ModelSerializer):
+    home_team = TeamSerializer(read_only=True)
+    away_team = TeamSerializer(read_only=True)
+    home_team_id = serializers.PrimaryKeyRelatedField(
+        queryset=Team.objects.all(), source='home_team', write_only=True, required=False
+    )
+    away_team_id = serializers.PrimaryKeyRelatedField(
+        queryset=Team.objects.all(), source='away_team', write_only=True, required=False
+    )
     class Meta:
         model = Match
         fields = '__all__'
@@ -136,56 +149,120 @@ class MatchRefereeNationalitySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class TeamMatchDataSerializer(serializers.ModelSerializer):
+    match = MatchSerializer(read_only=True)
+    match_id = serializers.PrimaryKeyRelatedField(
+        queryset=Match.objects.all(), source='match', write_only=True, required=False
+    )
+    team = TeamSerializer(read_only=True)
+    team_id = serializers.PrimaryKeyRelatedField(
+        queryset=Team.objects.all(), source='team', write_only=True, required=False
+    )
     class Meta:
         model = TeamMatchData
         fields = '__all__'
 
 class PlayerMatchDataSerializer(serializers.ModelSerializer):
+    match = MatchSerializer(read_only=True)
+    match_id = serializers.PrimaryKeyRelatedField(
+        queryset=Match.objects.all(), source='match', write_only=True, required=False
+    )
+    player = PlayerSerializer(read_only=True)
+    player_id = serializers.PrimaryKeyRelatedField(
+        queryset=Player.objects.all(), source='player', write_only=True, required=False
+    )
     class Meta:
         model = PlayerMatchData
         fields = '__all__'
 
 class PlayerPlaysForTeamSerializer(serializers.ModelSerializer):
+    player = PlayerSerializer(read_only=True)
+    player_id = serializers.PrimaryKeyRelatedField(
+        queryset=Player.objects.all(), source='player', write_only=True, required=False
+    )
+    team = TeamSerializer(read_only=True)
+    team_id = serializers.PrimaryKeyRelatedField(
+        queryset=Team.objects.all(), source='team', write_only=True, required=False
+    )
     class Meta:
         model = PlayerPlaysForTeam
         fields = '__all__'
 
 class TeamPlaysInLeagueSerializer(serializers.ModelSerializer):
+    team = TeamSerializer(read_only=True)
+    team_id = serializers.PrimaryKeyRelatedField(
+        queryset=Team.objects.all(), source='team', write_only=True, required=False
+    )
+    league = LeagueSerializer(read_only=True)
+    league_id = serializers.PrimaryKeyRelatedField(
+        queryset=League.objects.all(), source='league', write_only=True, required=False
+    )
     class Meta:
         model = TeamPlaysInLeague
         fields = '__all__'
 
 class MatchHeldInLeagueSerializer(serializers.ModelSerializer):
+    match = MatchSerializer(read_only=True)
+    match_id = serializers.PrimaryKeyRelatedField(
+        queryset=Match.objects.all(), source='match', write_only=True, required=False
+    )
+    league = LeagueSerializer(read_only=True)
+    league_id = serializers.PrimaryKeyRelatedField(
+        queryset=League.objects.all(), source='league', write_only=True, required=False
+    )
     class Meta:
         model = MatchHeldInLeague
         fields = '__all__'
 
 class TeamMatchDataGoalSerializer(serializers.ModelSerializer):
+    team_match_data = TeamMatchDataSerializer(read_only=True)
+    team_match_data_id = serializers.PrimaryKeyRelatedField(
+        queryset=TeamMatchData.objects.all(), source='team_match_data', write_only=True, required=False
+    )
     class Meta:
         model = TeamMatchDataGoal
         fields = '__all__'
 
 class TeamMatchDataBookingSerializer(serializers.ModelSerializer):
+    team_match_data = TeamMatchDataSerializer(read_only=True)
+    team_match_data_id = serializers.PrimaryKeyRelatedField(
+        queryset=TeamMatchData.objects.all(), source='team_match_data', write_only=True, required=False
+    )
     class Meta:
         model = TeamMatchDataBooking
         fields = '__all__'
 
 class TeamMatchDataSubstitutionSerializer(serializers.ModelSerializer):
+    team_match_data = TeamMatchDataSerializer(read_only=True)
+    team_match_data_id = serializers.PrimaryKeyRelatedField(
+        queryset=TeamMatchData.objects.all(), source='team_match_data', write_only=True, required=False
+    )
     class Meta:
         model = TeamMatchDataSubstitution
         fields = '__all__'
 
 class PlayerMatchDataGoalSerializer(serializers.ModelSerializer):
+    player_match_data = PlayerMatchDataSerializer(read_only=True)
+    player_match_data_id = serializers.PrimaryKeyRelatedField(
+        queryset=PlayerMatchData.objects.all(), source='player_match_data', write_only=True, required=False
+    )
     class Meta:
         model = PlayerMatchDataGoal
         fields = '__all__'
 
 class PlayerMatchDataBookingSerializer(serializers.ModelSerializer):
+    player_match_data = PlayerMatchDataSerializer(read_only=True)
+    player_match_data_id = serializers.PrimaryKeyRelatedField(
+        queryset=PlayerMatchData.objects.all(), source='player_match_data', write_only=True, required=False
+    )
     class Meta:
         model = PlayerMatchDataBooking
         fields = '__all__'
 
 class PlayerMatchDataSubstitutionSerializer(serializers.ModelSerializer):
+    player_match_data = PlayerMatchDataSerializer(read_only=True)
+    player_match_data_id = serializers.PrimaryKeyRelatedField(
+        queryset=PlayerMatchData.objects.all(), source='player_match_data', write_only=True, required=False
+    )
     class Meta:
         model = PlayerMatchDataSubstitution
         fields = '__all__'
