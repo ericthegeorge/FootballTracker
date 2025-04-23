@@ -34,8 +34,8 @@ class _TeamsScreenState extends State<TeamsScreen> {
           await TeamsService.fetchTeams(); // Assume this fetches a list of Team objects
       setState(() {
         isAdmin = adminStatus;
-        allTeams = Team.fromMap(map);
-        filteredTeams = List.from(teams);
+        allTeams = teams.map((map) => Team.fromMap(map)).toList();
+        filteredTeams = allTeams;
       });
     } catch (e) {
       print('Failed to load teams: $e');
@@ -55,7 +55,7 @@ class _TeamsScreenState extends State<TeamsScreen> {
 
   void _addTeam(Team newTeam) async {
     final success = await TeamsService.addTeam(
-      newTeam,
+      newTeam.toMap(),
     ); // Assume you have addTeam method
     if (success) {
       setState(() {
@@ -153,7 +153,10 @@ class _TeamsScreenState extends State<TeamsScreen> {
                       managerDateJoined: team.managerDateJoined,
                       image: team.image,
                     );
-                    final success = await TeamsService.updateTeam(updatedTeam);
+                    final success = await TeamsService.updateTeam(
+                      team.name,
+                      updatedTeam.toMap(),
+                    );
                     if (success) {
                       setState(() {
                         int index = allTeams.indexOf(team);
@@ -256,7 +259,7 @@ class _TeamsScreenState extends State<TeamsScreen> {
           isAdmin
               ? FloatingActionButton(
                 onPressed: () {
-                  _showEditTeamDialog(
+                  _addTeam(
                     Team(
                       name: '',
                       homeGround: '',
