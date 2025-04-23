@@ -196,6 +196,37 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     );
   }
 
+  void _onLeagueTapped(String league) {
+    // if (isAdmin) return; // Admin behavior is already handled.
+
+    // For non-admin users, show a dialog with options to view teams or matches
+    showDialog(
+      context: context,
+      builder:
+          (_) => AlertDialog(
+            title: Text('Choose an option for $league'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  // Navigate to the teams screen (this should be a named route or widget)
+                  Navigator.pushNamed(context, '/teams', arguments: league);
+                },
+                child: Text('View Teams'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  // Navigate to the matches screen (this should be a named route or widget)
+                  Navigator.pushNamed(context, '/matches', arguments: league);
+                },
+                child: Text('View Matches'),
+              ),
+            ],
+          ),
+    );
+  }
+
   Widget _buildLeagueItem(String league) {
     bool isSelectable = widget.mode == LeagueScreenMode.select;
     bool isSelected = selectedLeagues.contains(league);
@@ -223,7 +254,10 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
                 ],
               )
               : null, // Show nothing if not an admin
-      onTap: isSelectable ? () => _toggleSelection(league) : null,
+      onTap:
+          isSelectable
+              ? () => _onLeagueTapped(league)
+              : () => _onLeagueTapped(league),
     );
   }
 
