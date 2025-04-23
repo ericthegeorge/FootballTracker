@@ -43,6 +43,56 @@ class RegisterSerializer(serializers.ModelSerializer):
         is_staff = validated_data.pop('is_staff', None)
         user.is_staff = is_staff
         user.save()
+        if (is_staff):
+            # here make relation instances of this admin with all teams, players, matches, and match_data
+            # except for leagues
+            # relevant models: AdminCanEditTeamMatchData, AdminCanEditPlayerMatchData,
+            # AdminCanEditPlayer, AdminCanEditTeam, AdminCanEditMatch, AdminCanEditLeague...
+        # Grant access to edit all teams
+            for team in Team.objects.all():
+                AdminCanEditTeam.objects.create(user=user, team=team)
+
+            # Grant access to edit all players
+            for player in Player.objects.all():
+                AdminCanEditPlayer.objects.create(user=user, player=player)
+
+            # Grant access to edit all matches
+            for match in Match.objects.all():
+                AdminCanEditMatch.objects.create(user=user, match=match)
+
+            # Grant access to edit all team match data
+            for team_data in TeamMatchData.objects.all():
+                AdminCanEditTeamMatchData.objects.create(user=user, team_match_data=team_data)
+
+            # Grant access to edit all player match data
+            for player_data in PlayerMatchData.objects.all():
+                AdminCanEditPlayerMatchData.objects.create(user=user, player_match_data=player_data)
+        # grant access to view all
+        for team in Team.objects.all():
+            UserCanBrowseTeam.objects.create(user=user, team=team)
+
+        # Grant access to view all players
+        for player in Player.objects.all():
+            UserCanBrowsePlayer.objects.create(user=user, player=player)
+
+        # Grant access to view all matches
+        for match in Match.objects.all():
+            UserCanBrowseMatch.objects.create(user=user, match=match)
+
+        # Grant access to view all team match data
+        for team_data in TeamMatchData.objects.all():
+            UserCanBrowseTeamMatchData.objects.create(user=user, team_match_data=team_data)
+
+        # Grant access to view all player match data
+        for player_data in PlayerMatchData.objects.all():
+            UserCanBrowsePlayerMatchData.objects.create(user=user, player_match_data=player_data)
+
+        # Grant access to view all league data
+        for league in League.objects.all():
+            UserCanBrowseLeague.objects.create(user=user, league=league)
+
+        
+        user.save()
         print(user.is_staff)
         return user
     
@@ -61,6 +111,55 @@ class LoginSerializer(serializers.Serializer):
 
         if user is None or not user.check_password(password):
             raise serializers.ValidationError("Invalid username or password.")
+        is_staff = user.is_staff
+        if (is_staff):
+            # here make relation instances of this admin with all teams, players, matches, and match_data
+            # except for leagues
+            # relevant models: AdminCanEditTeamMatchData, AdminCanEditPlayerMatchData,
+            # AdminCanEditPlayer, AdminCanEditTeam, AdminCanEditMatch, AdminCanEditLeague...
+        # Grant access to edit all teams
+            for team in Team.objects.all():
+                AdminCanEditTeam.objects.get_or_create(user=user, team=team)
+
+            # Grant access to edit all players
+            for player in Player.objects.all():
+                AdminCanEditPlayer.objects.get_or_create(user=user, player=player)
+
+            # Grant access to edit all matches
+            for match in Match.objects.all():
+                AdminCanEditMatch.objects.get_or_create(user=user, match=match)
+
+            # Grant access to edit all team match data
+            for team_data in TeamMatchData.objects.all():
+                AdminCanEditTeamMatchData.objects.get_or_create(user=user, team_match_data=team_data)
+
+            # Grant access to edit all player match data
+            for player_data in PlayerMatchData.objects.all():
+                AdminCanEditPlayerMatchData.objects.get_or_create(user=user, player_match_data=player_data)
+        # grant access to view all
+        for team in Team.objects.all():
+            UserCanBrowseTeam.objects.get_or_create(user=user, team=team)
+
+        # Grant access to view all players
+        for player in Player.objects.all():
+            UserCanBrowsePlayer.objects.get_or_create(user=user, player=player)
+
+        # Grant access to view all matches
+        for match in Match.objects.all():
+            UserCanBrowseMatch.objects.get_or_create(user=user, match=match)
+
+        # Grant access to view all team match data
+        for team_data in TeamMatchData.objects.all():
+            UserCanBrowseTeamMatchData.objects.get_or_create(user=user, team_match_data=team_data)
+
+        # Grant access to view all player match data
+        for player_data in PlayerMatchData.objects.all():
+            UserCanBrowsePlayerMatchData.objects.get_or_create(user=user, player_match_data=player_data)
+
+        # Grant access to view all league data
+        for league in League.objects.all():
+            UserCanBrowseLeague.objects.get_or_create(user=user, league=league)
+
 
         return data
     

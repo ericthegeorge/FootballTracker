@@ -289,6 +289,10 @@ def create_stub_data():
             match_outcome=random.choice(["Win", "Loss", "Draw"]),
             team_formation=random.choice(["4-4-2", "4-3-3", "3-5-2"])
         )
+        TeamMatch.objects.create(
+            team = team,
+            match = match,
+        )
 
     # Create player data
     for player, team in players[:22]:  # limit to 22 players for match
@@ -309,6 +313,10 @@ def create_stub_data():
             goals_conceded=random.randint(0, 2),
             saves=random.randint(0, 5),
             position=random.choice([p[0] for p in Position.choices])
+        )
+        PlayerMatch.objects.create(
+            player = player,
+            match = match,
         )
 
 

@@ -19,6 +19,7 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
   List<String> filteredLeagues = [];
   Set<String> selectedLeagues = {};
   TextEditingController searchController = TextEditingController();
+  bool isAdmin = false;
 
   @override
   void initState() {
@@ -28,15 +29,15 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
 
   Future<void> _loadLeagues() async {
     try {
-      bool isAdmin = await AuthService.isAdmin();
-      print('Admin status: $isAdmin');
+      bool adminStatus = await AuthService.isAdmin();
+      print('Admin status: $adminStatus');
       final leagues = await LeagueService.fetchLeagues();
       setState(() {
+        isAdmin = adminStatus; // <- Save to state
         allLeagues = leagues;
         filteredLeagues = List.from(leagues);
       });
     } catch (e) {
-      // You could show a snackbar or error message here
       print('Failed to load leagues: $e');
     }
   }
@@ -166,11 +167,14 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _showAddLeagueDialog,
-        child: Icon(Icons.add),
-        tooltip: 'Add League',
-      ),
+      floatingActionButton:
+          isAdmin
+              ? FloatingActionButton(
+                onPressed: _showAddLeagueDialog,
+                child: Icon(Icons.add),
+                tooltip: 'Add League',
+              )
+              : null,
     );
   }
 }
