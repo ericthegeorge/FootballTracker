@@ -9,34 +9,34 @@ import 'account_settings_screen.dart';
 class MainSelectionScreen extends StatelessWidget {
   void navigateToScreen(BuildContext context, String screen) {
     switch (screen) {
-      case 'league':
+      case Routes.leagues:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => LeaguesScreen()),
+          MaterialPageRoute(builder: (_) => LeaguesScreen()),
         );
         break;
-      case 'team':
+      case Routes.teams:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => TeamsScreen()),
+          MaterialPageRoute(builder: (_) => TeamsScreen()),
         );
         break;
-      case 'player':
+      case Routes.players:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => PlayersScreen()),
+          MaterialPageRoute(builder: (_) => PlayersScreen()),
         );
         break;
-      case 'matches':
+      case Routes.matches:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => MatchesScreen()),
+          MaterialPageRoute(builder: (_) => MatchesScreen()),
         );
         break;
-      case 'account_settings':
+      case Routes.account_settings:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => AccountSettingsScreen()),
+          MaterialPageRoute(builder: (_) => AccountSettingsScreen()),
         );
         break;
       default:
@@ -138,5 +138,3 @@ class MainSelectionScreen extends StatelessWidget {
     );
   }
 }
-
-// Dummy screens for each option
