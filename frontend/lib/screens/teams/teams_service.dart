@@ -15,19 +15,33 @@ class TeamsService {
       // Processing data to replace the characters in team names
       return data.map<Map<String, dynamic>>((team) {
         String teamName = team['name'];
+        String manager_name = team['manager_name'];
+        String home_ground = team['home_ground'];
 
         // Replace "Ã©" with "é"
         teamName = teamName.replaceAll('Ã©', 'é');
+        teamName = teamName.replaceAll('Ã', 'í');
+        teamName = teamName.replaceAll('Ã¡', 'á');
+        // teamName = teamName.replaceAll('')
+
+        manager_name = manager_name.replaceAll('Ã©', 'é');
+        manager_name = manager_name.replaceAll('Ã¡', 'á');
+        manager_name = manager_name.replaceAll('Ã', 'í');
+
+        home_ground = home_ground.replaceAll('Ã©', 'é');
+        home_ground = home_ground.replaceAll('Ã¡', 'á');
+        home_ground = home_ground.replaceAll('Ã', 'í');
 
         print(
-          'Decoded Team Name: $teamName',
+          'Decoded Team Name: $teamName\n',
         ); // Print the team name for debugging
 
+        print(team['image']);
         // Create a new map with the team data, replacing the team name as needed
         return {
           'name': teamName,
-          'home_ground': team['home_ground'],
-          'manager_name': team['manager_name'],
+          'home_ground': home_ground,
+          'manager_name': manager_name,
           'manager_dob': team['manager_dob'],
           'manager_seasons_headed': team['manager_seasons_headed'],
           'manager_date_joined': team['manager_date_joined'],

@@ -183,8 +183,19 @@ class _TeamsScreenState extends State<TeamsScreen> {
     bool isSelected = selectedTeams.contains(team);
 
     return ListTile(
-      title: Text(team.name),
-      subtitle: Text('${team.homeGround}\nManager: ${team.managerName}'),
+      title: Row(
+        children: [
+          CircleAvatar(
+            backgroundImage: NetworkImage(team.image), // assuming it's a URL
+            radius: 16,
+          ),
+          SizedBox(width: 10),
+          Expanded(child: Text(team.name, overflow: TextOverflow.ellipsis)),
+        ],
+      ),
+      subtitle: Text(
+        '${team.homeGround}\nManager: ${team.managerName}\nManager Date of Birth: ${team.managerDob.year}\nManager Seasons Headed: ${team.managerSeasonsHeaded}\nManager Date Joined: ${team.managerDateJoined.year}',
+      ),
       trailing:
           isSelectable
               ? Checkbox(
