@@ -2,16 +2,26 @@ import 'dart:convert';
 // import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'dart:io';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
   static const String baseUrl = 'http://127.0.0.1:8000/api'; // testing url
 
-  static Future<http.Response> login(String username, String password) {
-    return http.post(
+  static Future<http.Response> login(String username, String password) async {
+    final response = await http.post(
       Uri.parse('$baseUrl/login/'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'username': username, 'password': password}),
+      body: {'username': username, 'password': password},
     );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', data['token']);
+      await prefs.setBool('is_staff', data['is_staff']);
+      await prefs.setString('username', data['username']);
+    }
+
+    return response;
   }
 
   static Future<http.Response> register(
@@ -43,6 +53,36 @@ class AuthService {
 
     var streamedResponse = await request.send();
     var response = await http.Response.fromStream(streamedResponse);
+
+    var code = response.statusCode;
+    if (code == 200 || code == 201) {
+      final data = jsonDecode(response.body);
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', data['token']);
+      await prefs.setBool('is_staff', data['is_staff']);
+      await prefs.setString('username', data['username']);
+    }
+
     return response;
+  }
+
+  static Future<String?> getUsername() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('username');
+  }
+
+  static Future<bool> isAdmin() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('is_staff') ?? false;
+  }
+
+  static Future<String?> getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('token');
+  }
+
+  static Future<void> logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
   }
 }
