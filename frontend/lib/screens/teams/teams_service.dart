@@ -25,16 +25,22 @@ class TeamsService {
         teamName = teamName.replaceAll('Ã©', 'é');
         teamName = teamName.replaceAll('Ã', 'í');
         teamName = teamName.replaceAll('Ã¡', 'á');
+        teamName = teamName.replaceAll('í', 'Í');
+        teamName = teamName.replaceAll('í±', 'ñ');
+
         // teamName = teamName.replaceAll('')
 
         manager_name = manager_name.replaceAll('Ã©', 'é');
         manager_name = manager_name.replaceAll('Ã¡', 'á');
         manager_name = manager_name.replaceAll('Ã', 'í');
+        manager_name = manager_name.replaceAll('í', 'Í');
+        manager_name = manager_name.replaceAll('í±', 'ñ');
 
         home_ground = home_ground.replaceAll('Ã©', 'é');
         home_ground = home_ground.replaceAll('Ã¡', 'á');
         home_ground = home_ground.replaceAll('Ã', 'í');
-        home_ground = home_ground.replaceAll('í³', 'ó');
+        home_ground = home_ground.replaceAll('í', 'Í');
+        home_ground = home_ground.replaceAll('í±', 'ñ');
 
         print(
           'Decoded Team Name: $teamName\n',
