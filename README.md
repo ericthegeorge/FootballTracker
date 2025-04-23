@@ -25,6 +25,7 @@ Assuming you have python installed, which is the base language for Django, you c
 `pip install python-dotenv`
 `pip install Pillow`
 `pip install django-countries`
+`pip install django-cors-headers`
 
 Next, open your MySQL workbench. If you don't have it installed already, you can install it [here](https://dev.mysql.com/downloads/mysql/).
 
