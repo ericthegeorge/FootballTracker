@@ -174,13 +174,15 @@ class TeamView(APIView):
             return Response({'error': 'Team not found'}, status=status.HTTP_404_NOT_FOUND)
 
     def delete(self, request, name):
+        # print(name)
         try:
             decoded_name = urllib.parse.unquote(name)
+            print(decoded_name)
             team = Team.objects.get(name=decoded_name)
             team.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         except Team.DoesNotExist:
-            return Response({'error': 'Team not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'Team not found'}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
 class PlayerView(APIView):
     def get(self, request):

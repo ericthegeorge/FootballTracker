@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'teams_service.dart'; // Assuming this fetches team data from your API
 import '../../services/auth_service.dart';
 
-import 'package:intl/intl.dart';
+// import 'package:intl/intl.dart';
 
 enum TeamScreenMode { view, select }
 
@@ -37,7 +37,7 @@ class _TeamsScreenState extends State<TeamsScreen> {
       setState(() {
         isAdmin = adminStatus;
         allTeams = teams.map((map) => Team.fromMap(map)).toList();
-        filteredTeams = allTeams;
+        filteredTeams = List.from(allTeams);
       });
     } catch (e) {
       print('Failed to load teams: $e');
@@ -62,7 +62,8 @@ class _TeamsScreenState extends State<TeamsScreen> {
     if (success) {
       setState(() {
         allTeams.add(newTeam);
-        filteredTeams.add(newTeam);
+        // filteredTeams.add(newTeam);
+        _onSearchChanged(searchController.text);
       });
     } else {
       ScaffoldMessenger.of(
@@ -110,29 +111,65 @@ class _TeamsScreenState extends State<TeamsScreen> {
     TextEditingController managerNameController = TextEditingController(
       text: team.managerName,
     );
+    TextEditingController managerDobController = TextEditingController(
+      text: team.managerDob.toIso8601String().split('T').first,
+    );
+    TextEditingController managerSeasonsController = TextEditingController(
+      text: team.managerSeasonsHeaded.toString(),
+    );
+    TextEditingController managerDateJoinedController = TextEditingController(
+      text: team.managerDateJoined.toIso8601String().split('T').first,
+    );
+    TextEditingController imageUrlController = TextEditingController(
+      text: team.image,
+    );
 
     showDialog(
       context: context,
       builder:
           (_) => AlertDialog(
             title: Text('Edit Team: ${team.name}'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: nameController,
-                  decoration: InputDecoration(hintText: 'Team Name'),
-                ),
-                TextField(
-                  controller: homeGroundController,
-                  decoration: InputDecoration(hintText: 'Home Ground'),
-                ),
-                TextField(
-                  controller: managerNameController,
-                  decoration: InputDecoration(hintText: 'Manager Name'),
-                ),
-                // Add more fields as needed for managerDob, managerSeasonsHeaded, etc.
-              ],
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: nameController,
+                    decoration: InputDecoration(hintText: 'Team Name'),
+                  ),
+                  TextField(
+                    controller: homeGroundController,
+                    decoration: InputDecoration(hintText: 'Home Ground'),
+                  ),
+                  TextField(
+                    controller: managerNameController,
+                    decoration: InputDecoration(hintText: 'Manager Name'),
+                  ),
+                  TextField(
+                    controller: managerDobController,
+                    decoration: InputDecoration(
+                      hintText: 'Manager DOB (YYYY-MM-DD)',
+                    ),
+                    keyboardType: TextInputType.datetime,
+                  ),
+                  TextField(
+                    controller: managerSeasonsController,
+                    decoration: InputDecoration(hintText: 'Seasons Headed'),
+                    keyboardType: TextInputType.number,
+                  ),
+                  TextField(
+                    controller: managerDateJoinedController,
+                    decoration: InputDecoration(
+                      hintText: 'Manager Date Joined (YYYY-MM-DD)',
+                    ),
+                    keyboardType: TextInputType.datetime,
+                  ),
+                  TextField(
+                    controller: imageUrlController,
+                    decoration: InputDecoration(hintText: 'Image URL'),
+                  ),
+                ],
+              ),
             ),
             actions: [
               TextButton(
@@ -141,19 +178,21 @@ class _TeamsScreenState extends State<TeamsScreen> {
               ),
               TextButton(
                 onPressed: () async {
-                  String newName = nameController.text.trim();
-                  String newHomeGround = homeGroundController.text.trim();
-                  String newManagerName = managerNameController.text.trim();
-                  // You can collect and validate other fields as needed
-                  if (newName.isNotEmpty && newHomeGround.isNotEmpty) {
+                  try {
                     Team updatedTeam = Team(
-                      name: newName,
-                      homeGround: newHomeGround,
-                      managerDob: team.managerDob, // Keep existing dob
-                      managerName: newManagerName,
-                      managerSeasonsHeaded: team.managerSeasonsHeaded,
-                      managerDateJoined: team.managerDateJoined,
-                      image: team.image,
+                      name: nameController.text.trim(),
+                      homeGround: homeGroundController.text.trim(),
+                      managerName: managerNameController.text.trim(),
+                      managerDob: DateTime.parse(
+                        managerDobController.text.trim(),
+                      ),
+                      managerSeasonsHeaded: int.parse(
+                        managerSeasonsController.text.trim(),
+                      ),
+                      managerDateJoined: DateTime.parse(
+                        managerDateJoinedController.text.trim(),
+                      ),
+                      image: imageUrlController.text.trim(),
                     );
                     final success = await TeamsService.updateTeam(
                       team.name,
@@ -163,7 +202,9 @@ class _TeamsScreenState extends State<TeamsScreen> {
                       setState(() {
                         int index = allTeams.indexOf(team);
                         allTeams[index] = updatedTeam;
-                        filteredTeams[index] = updatedTeam;
+                        _onSearchChanged(
+                          searchController.text,
+                        ); // refresh filtered list
                       });
                       Navigator.pop(context);
                     } else {
@@ -171,6 +212,14 @@ class _TeamsScreenState extends State<TeamsScreen> {
                         SnackBar(content: Text('Failed to update team')),
                       );
                     }
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'Invalid input. Please check all fields.',
+                        ),
+                      ),
+                    );
                   }
                 },
                 child: Text('Save'),

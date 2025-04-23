@@ -22,7 +22,7 @@ urlpatterns = [
     path('leagues/<str:name>', LeagueView.as_view(), name = 'leagues'),
     path('leagues/', LeagueView.as_view(), name = 'leagues'),
     path('teams/', TeamView.as_view(), name = 'teams'),
-    path('teams/<str:name>', TeamView.as_view()),  # for PUT and DELETE
+    path('teams/<str:name>/', TeamView.as_view(), name = 'teams'),  # for PUT and DELETE
     path('players/', PlayerView.as_view(), name = 'players'),
     path('outfield-players/', OutfieldPlayerView.as_view(), name = 'outfield_players'),
     path('goalkeepers/', GoalkeeperView.as_view(), name = 'goalkeepers'),
