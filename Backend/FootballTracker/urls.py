@@ -19,6 +19,7 @@ urlpatterns = [
     path('register/', RegisterView.as_view(), name = 'register'),
     path('login/', LoginView.as_view(), name = 'login'),
     path('user-profile/', UserProfileView.as_view(), name = 'user_profile'),
+    path('leagues/<str:name>', LeagueView.as_view(), name = 'leagues'),
     path('leagues/', LeagueView.as_view(), name = 'leagues'),
     path('teams/', TeamView.as_view(), name = 'teams'),
     path('players/', PlayerView.as_view(), name = 'players'),

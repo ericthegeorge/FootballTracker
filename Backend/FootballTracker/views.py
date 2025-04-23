@@ -125,9 +125,9 @@ class LeagueView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def put(self, request, pk):
+    def put(self, request, name):
         try:
-            league = League.objects.get(pk=pk)
+            league = League.objects.get(name=name)
             serializer = LeagueSerializer(league, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
@@ -136,9 +136,9 @@ class LeagueView(APIView):
         except League.DoesNotExist:
             return Response({'error': 'League not found'}, status=status.HTTP_404_NOT_FOUND)
 
-    def delete(self, request, pk):
+    def delete(self, request,name):
         try:
-            league = League.objects.get(pk=pk)
+            league = League.objects.get(name=name)
             league.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         except League.DoesNotExist:
