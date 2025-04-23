@@ -175,10 +175,10 @@ class LeagueSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class TeamSerializer(serializers.ModelSerializer):
-    league = LeagueSerializer(read_only=True)
-    league_id = serializers.PrimaryKeyRelatedField(
-        queryset=League.objects.all(), source='league', write_only=True, required=False
-    )
+    # league = LeagueSerializer(read_only=True)
+    # league_id = serializers.PrimaryKeyRelatedField(
+    #     queryset=League.objects.all(), source='league', write_only=True, required=False
+    # )
     class Meta:
         model = Team
         fields = '__all__'

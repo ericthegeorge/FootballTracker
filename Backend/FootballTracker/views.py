@@ -31,6 +31,9 @@ from .serializers import (
     TeamMatchSerializer, PlayerMatchSerializer
 )
 
+import urllib.parse
+
+
 # class RegisterView(APIView):
 #     def post(self, request):
 #         serializer = RegisterSerializer(data=request.data)
@@ -157,9 +160,10 @@ class TeamView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def put(self, request, pk):
+    def put(self, request, name):
         try:
-            team = Team.objects.get(pk=pk)
+            decoded_name = urllib.parse.unquote(name)
+            team = Team.objects.get(name=decoded_name)
             serializer = TeamSerializer(team, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
@@ -168,9 +172,10 @@ class TeamView(APIView):
         except Team.DoesNotExist:
             return Response({'error': 'Team not found'}, status=status.HTTP_404_NOT_FOUND)
 
-    def delete(self, request, pk):
+    def delete(self, request, name):
         try:
-            team = Team.objects.get(pk=pk)
+            decoded_name = urllib.parse.unquote(name)
+            team = Team.objects.get(name=decoded_name)
             team.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         except Team.DoesNotExist:
