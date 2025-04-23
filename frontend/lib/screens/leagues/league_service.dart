@@ -31,4 +31,16 @@ class LeagueService {
 
     return response.statusCode == 204;
   }
+
+  static Future<bool> updateLeague(String oldName, String newName) async {
+    final response = await http.put(
+      Uri.parse('$baseUrl/leagues/$oldName'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'name': newName}),
+    );
+
+    print(response);
+    print(response.statusCode);
+    return response.statusCode == 200;
+  }
 }

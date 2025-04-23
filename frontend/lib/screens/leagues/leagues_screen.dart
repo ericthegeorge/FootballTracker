@@ -101,6 +101,75 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     });
   }
 
+  void _confirmDeleteLeague(String league) {
+    showDialog(
+      context: context,
+      builder:
+          (_) => AlertDialog(
+            title: Text('Delete League'),
+            content: Text('Are you sure you want to delete $league?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  _deleteLeague(league);
+                },
+                child: Text('Delete'),
+              ),
+            ],
+          ),
+    );
+  }
+
+  void _showEditLeagueDialog(String oldName) {
+    String newName = oldName;
+    showDialog(
+      context: context,
+      builder:
+          (_) => AlertDialog(
+            title: Text('Edit League'),
+            content: TextField(
+              onChanged: (value) => newName = value,
+              controller: TextEditingController(text: oldName),
+              decoration: InputDecoration(hintText: 'Enter new league name'),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () async {
+                  Navigator.pop(context);
+                  if (newName.trim().isNotEmpty && newName != oldName) {
+                    final success = await LeagueService.updateLeague(
+                      oldName,
+                      newName.trim(),
+                    );
+                    if (success) {
+                      setState(() {
+                        int index = allLeagues.indexOf(oldName);
+                        allLeagues[index] = newName.trim();
+                        _onSearchChanged(searchController.text);
+                      });
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Failed to update $oldName')),
+                      );
+                    }
+                  }
+                },
+                child: Text('Save'),
+              ),
+            ],
+          ),
+    );
+  }
+
   void _showAddLeagueDialog() {
     String newLeague = '';
     showDialog(
@@ -140,36 +209,18 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
                 onChanged: (_) => _toggleSelection(league),
               )
               : isAdmin
-              ? IconButton(
-                icon: Icon(Icons.delete),
-                onPressed: () {
-                  // Confirm before deleting
-                  showDialog(
-                    context: context,
-                    builder:
-                        (_) => AlertDialog(
-                          title: Text('Delete League'),
-                          content: Text(
-                            'Are you sure you want to delete $league?',
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context); // Close dialog
-                              },
-                              child: Text('Cancel'),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context); // Close dialog
-                                _deleteLeague(league);
-                              },
-                              child: Text('Delete'),
-                            ),
-                          ],
-                        ),
-                  );
-                },
+              ? Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.edit),
+                    onPressed: () => _showEditLeagueDialog(league),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () => _confirmDeleteLeague(league),
+                  ),
+                ],
               )
               : null, // Show nothing if not an admin
       onTap: isSelectable ? () => _toggleSelection(league) : null,
