@@ -230,14 +230,6 @@ class ManagerNationalitySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class MatchSerializer(serializers.ModelSerializer):
-    home_team = TeamSerializer(read_only=True)
-    away_team = TeamSerializer(read_only=True)
-    home_team_id = serializers.PrimaryKeyRelatedField(
-        queryset=Team.objects.all(), source='home_team', write_only=True, required=False
-    )
-    away_team_id = serializers.PrimaryKeyRelatedField(
-        queryset=Team.objects.all(), source='away_team', write_only=True, required=False
-    )
     class Meta:
         model = Match
         fields = '__all__'
@@ -435,3 +427,21 @@ class PlayerMatchSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlayerMatch
         fields = '__all__'
+
+class TeamScoreSerializer(serializers.ModelSerializer):
+    team_name = serializers.CharField(source='team.name')
+
+    class Meta:
+        model = TeamMatchData
+        fields = ['team_name', 'goals_scored']
+
+class MatchDetailSerializer(serializers.ModelSerializer):
+    teams = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Match
+        fields = ['match_id', 'date', 'location', 'start_time', 'end_time', 'referee_name', 'teams']
+
+    def get_teams(self, obj):
+        team_data = TeamMatchData.objects.filter(match=obj)
+        return TeamScoreSerializer(team_data, many=True).data

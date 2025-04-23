@@ -11,7 +11,7 @@ from .views import (
     AdminCanEditTeamView, AdminCanEditMatchView, AdminCanEditLeagueView,
     UserCanBrowseTeamMatchDataView, UserCanBrowsePlayerMatchDataView, UserCanBrowsePlayerView,
     UserCanBrowseTeamView, UserCanBrowseMatchView, UserCanBrowseLeagueView,
-    TeamMatchView, PlayerMatchView
+    TeamMatchView, PlayerMatchView, MatchDetailView
 )
 
 urlpatterns = [
@@ -54,5 +54,6 @@ urlpatterns = [
     path('user-can-browse-match/', UserCanBrowseMatchView.as_view(), name = 'user_can_browse_match'),
     path('user-can-browse-league/', UserCanBrowseLeagueView.as_view(), name = 'user_can_browse_league'),
     path('team-match/', TeamMatchView.as_view(), name = 'team_match'),
-    path('player-match/', PlayerMatchView.as_view(), name = 'player_match')
+    path('player-match/', PlayerMatchView.as_view(), name = 'player_match'),
+    path('matches/<int:match_id>/', MatchDetailView.as_view(), name='match-detail')
 ]

@@ -1,4 +1,5 @@
 from rest_framework.views import APIView
+from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import authenticate
@@ -28,7 +29,7 @@ from .serializers import (
     AdminCanEditTeamSerializer, AdminCanEditMatchSerializer, AdminCanEditLeagueSerializer,
     UserCanBrowseTeamMatchDataSerializer, UserCanBrowsePlayerMatchDataSerializer, UserCanBrowsePlayerSerializer,
     UserCanBrowseTeamSerializer, UserCanBrowseMatchSerializer, UserCanBrowseLeagueSerializer,
-    TeamMatchSerializer, PlayerMatchSerializer
+    TeamMatchSerializer, PlayerMatchSerializer, MatchDetailSerializer
 )
 
 # class RegisterView(APIView):
@@ -1231,3 +1232,8 @@ class PlayerMatchView(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         except PlayerMatch.DoesNotExist:
             return Response({'error': 'Player Match Data not found'}, status=status.HTTP_404_NOT_FOUND)
+
+class MatchDetailView(generics.RetrieveAPIView):
+    queryset = Match.objects.all()
+    serializer_class = MatchDetailSerializer
+    lookup_field = 'match_id'
