@@ -40,6 +40,10 @@ class League(models.Model):
     name = models.CharField(primary_key=True, max_length=100)
 
 
+def team_image_upload_path(instance, filename):
+    return f'profile_images/teams/{instance.name}/{filename}'
+
+
 class Team(models.Model):
     name = models.CharField(primary_key=True, max_length=100)
     home_ground = models.CharField(max_length=100)
@@ -47,6 +51,7 @@ class Team(models.Model):
     manager_name = models.CharField(max_length=100)
     manager_seasons_headed = models.IntegerField()
     manager_date_joined = models.DateField()
+    image = models.CharField(max_length=255)
 
 
 class Player(models.Model):
