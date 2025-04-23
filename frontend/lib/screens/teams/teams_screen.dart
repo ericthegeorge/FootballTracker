@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'teams_service.dart'; // Assuming this fetches team data from your API
 import '../../services/auth_service.dart';
 
+import 'package:intl/intl.dart';
+
 enum TeamScreenMode { view, select }
 
 class TeamsScreen extends StatefulWidget {
@@ -178,6 +180,118 @@ class _TeamsScreenState extends State<TeamsScreen> {
     );
   }
 
+  void _showAddTeamDialog() {
+    TextEditingController nameController = TextEditingController();
+    TextEditingController homeGroundController = TextEditingController();
+    TextEditingController managerNameController = TextEditingController();
+    TextEditingController managerDobController = TextEditingController();
+    TextEditingController managerSeasonsController = TextEditingController();
+    TextEditingController managerDateJoinedController = TextEditingController();
+    TextEditingController imageUrlController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder:
+          (_) => AlertDialog(
+            title: Text('Add Team'),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: nameController,
+                    decoration: InputDecoration(hintText: 'Team Name'),
+                  ),
+                  TextField(
+                    controller: homeGroundController,
+                    decoration: InputDecoration(hintText: 'Home Ground'),
+                  ),
+                  TextField(
+                    controller: managerNameController,
+                    decoration: InputDecoration(hintText: 'Manager Name'),
+                  ),
+                  TextField(
+                    controller: managerDobController,
+                    decoration: InputDecoration(
+                      hintText: 'Manager DOB (YYYY-MM-DD)',
+                    ),
+                    keyboardType: TextInputType.datetime,
+                  ),
+                  TextField(
+                    controller: managerSeasonsController,
+                    decoration: InputDecoration(hintText: 'Seasons Headed'),
+                    keyboardType: TextInputType.number,
+                  ),
+                  TextField(
+                    controller: managerDateJoinedController,
+                    decoration: InputDecoration(
+                      hintText: 'Manager Date Joined (YYYY-MM-DD)',
+                    ),
+                    keyboardType: TextInputType.datetime,
+                  ),
+                  TextField(
+                    controller: imageUrlController,
+                    decoration: InputDecoration(hintText: 'Image URL'),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () {
+                  String name = nameController.text.trim();
+                  String homeGround = homeGroundController.text.trim();
+                  String managerName = managerNameController.text.trim();
+                  String dobText = managerDobController.text.trim();
+                  String seasonsText = managerSeasonsController.text.trim();
+                  String dateJoinedText =
+                      managerDateJoinedController.text.trim();
+                  String imageUrl = imageUrlController.text.trim();
+
+                  if (name.isNotEmpty &&
+                      homeGround.isNotEmpty &&
+                      managerName.isNotEmpty &&
+                      dobText.isNotEmpty &&
+                      seasonsText.isNotEmpty &&
+                      dateJoinedText.isNotEmpty &&
+                      imageUrl.isNotEmpty) {
+                    try {
+                      Team newTeam = Team(
+                        name: name,
+                        homeGround: homeGround,
+                        managerDob: DateTime.parse(dobText),
+                        managerName: managerName,
+                        managerSeasonsHeaded: int.parse(seasonsText),
+                        managerDateJoined: DateTime.parse(dateJoinedText),
+                        image: imageUrl,
+                      );
+                      print(DateTime.parse(dobText));
+                      _addTeam(newTeam);
+                      Navigator.pop(context);
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Invalid date or number format.'),
+                        ),
+                      );
+                    }
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('All fields must be filled.')),
+                    );
+                  }
+                },
+                child: Text('Add'),
+              ),
+            ],
+          ),
+    );
+  }
+
   Widget _buildTeamItem(Team team) {
     bool isSelectable = widget.mode == TeamScreenMode.select;
     bool isSelected = selectedTeams.contains(team);
@@ -270,17 +384,7 @@ class _TeamsScreenState extends State<TeamsScreen> {
           isAdmin
               ? FloatingActionButton(
                 onPressed: () {
-                  _addTeam(
-                    Team(
-                      name: '',
-                      homeGround: '',
-                      managerDob: DateTime.now(),
-                      managerName: '',
-                      managerSeasonsHeaded: 0,
-                      managerDateJoined: DateTime.now(),
-                      image: '',
-                    ),
-                  );
+                  _showAddTeamDialog();
                 },
                 child: Icon(Icons.add),
                 tooltip: 'Add Team',

@@ -1,11 +1,14 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class TeamsService {
   static const String baseUrl = 'http://127.0.0.1:8000/api';
 
   // Fetch all teams for a specific league
   // Fetch all teams for a specific league
+  final DateFormat formatter = DateFormat('yyyy-MM-dd');
+
   static Future<List<Map<String, dynamic>>> fetchTeams() async {
     final response = await http.get(Uri.parse('$baseUrl/teams/'));
 
@@ -31,6 +34,7 @@ class TeamsService {
         home_ground = home_ground.replaceAll('Ã©', 'é');
         home_ground = home_ground.replaceAll('Ã¡', 'á');
         home_ground = home_ground.replaceAll('Ã', 'í');
+        home_ground = home_ground.replaceAll('í³', 'ó');
 
         print(
           'Decoded Team Name: $teamName\n',
@@ -58,6 +62,14 @@ class TeamsService {
   }
 
   static Future<bool> addTeam(Map<String, dynamic> teamData) async {
+    // Format date fields before sending the request
+    teamData['manager_dob'] = DateFormat(
+      'yyyy-MM-dd',
+    ).format(DateTime.parse(teamData['manager_dob']));
+    teamData['manager_date_joined'] = DateFormat(
+      'yyyy-MM-dd',
+    ).format(DateTime.parse(teamData['manager_date_joined']));
+
     final response = await http.post(
       Uri.parse('$baseUrl/teams/'),
       headers: {'Content-Type': 'application/json'},
@@ -70,6 +82,17 @@ class TeamsService {
     String oldName,
     Map<String, dynamic> updatedTeamData,
   ) async {
+    // Format date fields before sending the request
+    updatedTeamData['manager_dob'] = DateFormat(
+      'yyyy-MM-dd',
+    ).format(DateTime.parse(updatedTeamData['manager_dob']));
+    updatedTeamData['manager_date_joined'] = DateFormat(
+      'yyyy-MM-dd',
+    ).format(DateTime.parse(updatedTeamData['manager_date_joined']));
+
+    print(updatedTeamData['manager_dob']);
+    print(updatedTeamData['manager_date_joined']);
+
     final encodedOldName = encodeForUrl(oldName);
 
     final response = await http.put(
@@ -88,7 +111,6 @@ class TeamsService {
       Uri.parse('$baseUrl/teams/$encodedName/'),
       headers: {'Content-Type': 'application/json'},
     );
-
     return response.statusCode == 204; // No content on successful delete
   }
 }
