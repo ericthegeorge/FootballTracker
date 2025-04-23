@@ -67,6 +67,30 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     }
   }
 
+  void _deleteLeague(String league) async {
+    try {
+      final success = await LeagueService.deleteLeague(league);
+      if (success) {
+        setState(() {
+          allLeagues.remove(league);
+          filteredLeagues.remove(league);
+        });
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('$league has been deleted')));
+      } else {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Failed to delete $league')));
+      }
+    } catch (e) {
+      print('Failed to delete league: $e');
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
+  }
+
   void _toggleSelection(String league) {
     setState(() {
       if (selectedLeagues.contains(league)) {
@@ -115,7 +139,39 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
                 value: isSelected,
                 onChanged: (_) => _toggleSelection(league),
               )
-              : null,
+              : isAdmin
+              ? IconButton(
+                icon: Icon(Icons.delete),
+                onPressed: () {
+                  // Confirm before deleting
+                  showDialog(
+                    context: context,
+                    builder:
+                        (_) => AlertDialog(
+                          title: Text('Delete League'),
+                          content: Text(
+                            'Are you sure you want to delete $league?',
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context); // Close dialog
+                              },
+                              child: Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context); // Close dialog
+                                _deleteLeague(league);
+                              },
+                              child: Text('Delete'),
+                            ),
+                          ],
+                        ),
+                  );
+                },
+              )
+              : null, // Show nothing if not an admin
       onTap: isSelectable ? () => _toggleSelection(league) : null,
     );
   }

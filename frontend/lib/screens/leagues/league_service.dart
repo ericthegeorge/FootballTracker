@@ -22,4 +22,13 @@ class LeagueService {
     );
     return response.statusCode == 201;
   }
+
+  static Future<bool> deleteLeague(String league) async {
+    final response = await http.delete(
+      Uri.parse('$baseUrl/leagues/$league'),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    return response.statusCode == 204;
+  }
 }
