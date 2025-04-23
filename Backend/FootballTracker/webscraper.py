@@ -96,7 +96,7 @@ def scrape_league(league_url):
     club_links = get_club_links_from_league(league_url)
     
     for club_name, club_url, manager_name, location, logo_src in club_links:
-        # print(f"Scraping club: {club_url}")
+        print(f"Scraping club: {club_url}")
         players = get_players_from_club(club_url, club_name)
         all_players.extend(players)
         tttime.sleep(1)  # polite crawling
@@ -185,6 +185,11 @@ for club_name, club_url, manager_name, location, logo_src in clubs:
 
 
 
+def get_country_code(name):
+    for code, country_name in countries:
+        if country_name.lower() == name.lower():
+            return code
+    return "ES"  # Or "XX" as a fallback
 
 
 
@@ -201,7 +206,7 @@ def create_stub_data():
             manager_dob=club["manager_dob"],
             manager_date_joined=club["manager_date_joined"],
             manager_seasons_headed=club["manager_seasons_headed"],
-            home_ground=club["home_ground"],
+            home_ground=club["home_ground"] or "Bilbao",
             image=club["image"]
         )
         TeamPlaysInLeague.objects.create(team=team, league=league)
@@ -263,7 +268,7 @@ def create_stub_data():
 
 
     MatchHeldInLeague.objects.create(match=match, league=league)
-    MatchRefereeNationality.objects.create(match=match, nationality="Spain")
+    MatchRefereeNationality.objects.create(match=match, nationality="ES")
 
     # Create match data for teams
     for team in teams[:2]:  # only 2 teams per match
