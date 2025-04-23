@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'league_service.dart';
+import '../../services/auth_service.dart';
 
 enum LeagueScreenMode { view, select }
 
@@ -14,12 +15,7 @@ class LeaguesScreen extends StatefulWidget {
 }
 
 class _LeaguesScreenState extends State<LeaguesScreen> {
-  List<String> allLeagues = [
-    'Premier League',
-    'La Liga',
-    'Bundesliga',
-    'Serie A',
-  ];
+  List<String> allLeagues = [];
   List<String> filteredLeagues = [];
   Set<String> selectedLeagues = {};
   TextEditingController searchController = TextEditingController();
@@ -32,6 +28,8 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
 
   Future<void> _loadLeagues() async {
     try {
+      bool isAdmin = await AuthService.isAdmin();
+      print('Admin status: $isAdmin');
       final leagues = await LeagueService.fetchLeagues();
       setState(() {
         allLeagues = leagues;
