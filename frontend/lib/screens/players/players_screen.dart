@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'player_service.dart';
+import '../../services/auth_service.dart';
 
 class PlayersScreen extends StatelessWidget {
   @override
