@@ -303,22 +303,22 @@ class PlayerMatchDataSubstitution(models.Model):
 
 class AdminCanEditTeamMatchData(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    match = models.ForeignKey(Match, on_delete=models.CASCADE)
-    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    team_match_data = models.ForeignKey(TeamMatchData, on_delete=models.CASCADE)
+    # team = models.ForeignKey(Team, on_delete=models.CASCADE)
     
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['user', 'match', 'team'], name='unique_admin_edit_team_match_data')
+            models.UniqueConstraint(fields=['user', 'team_match_data'], name='unique_admin_edit_team_match_data')
         ]
 
 class AdminCanEditPlayerMatchData(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    match = models.ForeignKey(Match, on_delete=models.CASCADE)
-    player = models.ForeignKey(Player, on_delete=models.CASCADE)
+    player_match_data = models.ForeignKey(PlayerMatchData, on_delete=models.CASCADE)
+    # player = models.ForeignKey(Player, on_delete=models.CASCADE)
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['user', 'match', 'player'], name='unique_admin_edit_player_match_data')
+            models.UniqueConstraint(fields=['user', 'player_match_data'], name='unique_admin_edit_player_match_data')
         ]
 
 class AdminCanEditPlayer(models.Model):
@@ -362,22 +362,22 @@ class AdminCanEditLeague(models.Model):
 
 class UserCanBrowseTeamMatchData(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    match = models.ForeignKey(Match, on_delete=models.CASCADE)
-    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    team_match_data = models.ForeignKey(TeamMatchData, on_delete=models.CASCADE)
+    # team = models.ForeignKey(Team, on_delete=models.CASCADE)
     
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['user', 'match', 'team'], name='unique_user_browse_team_match_data')
+            models.UniqueConstraint(fields=['user', 'team_match_data',], name='unique_user_browse_team_match_data')
         ]
 
 class UserCanBrowsePlayerMatchData(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    match = models.ForeignKey(Match, on_delete=models.CASCADE)
-    player = models.ForeignKey(Player, on_delete=models.CASCADE)
+    player_match_data = models.ForeignKey(PlayerMatchData, on_delete=models.CASCADE)
+    # player = models.ForeignKey(Player, on_delete=models.CASCADE)
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['user', 'match', 'player'], name='unique_user_browse_player_match_data')
+            models.UniqueConstraint(fields=['user', 'player_match_data'], name='unique_user_browse_player_match_data')
         ]
 
 class UserCanBrowsePlayer(models.Model):
