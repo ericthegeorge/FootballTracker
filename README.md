@@ -154,7 +154,7 @@ With this, you can now just run the python server in Backend, and run the flutte
 
 `flutter run`
 
-If flutter screams at you, you may wanna clean and build to hopefully resolve the errors.
+If flutter screams at you, you may need to clean and build to hopefully resolve the errors.
 
 `flutter clean`
 
@@ -162,7 +162,7 @@ If flutter screams at you, you may wanna clean and build to hopefully resolve th
 
 You may see our final report for a guide on operation of the application.
 
-Please enjoy 😁 
+Please enjoy! 😁 
 
 # Other Notes
 
