@@ -8,8 +8,9 @@ enum TeamScreenMode { view, select }
 
 class TeamsScreen extends StatefulWidget {
   final TeamScreenMode mode;
+  final String? league;
 
-  const TeamsScreen({Key? key, this.mode = TeamScreenMode.view})
+  const TeamsScreen({Key? key, this.mode = TeamScreenMode.view, this.league})
     : super(key: key);
 
   @override
@@ -31,13 +32,46 @@ class _TeamsScreenState extends State<TeamsScreen> {
 
   Future<void> _loadTeams() async {
     try {
+      // print("Fetching teams...");
+      // print(await TeamsService.fetchTeams());
+      // print("Fetching team leagues...");
+      // print(await TeamsService.getTeamLeagues());
       bool adminStatus = await AuthService.isAdmin();
-      final teams =
-          await TeamsService.fetchTeams(); // Assume this fetches a list of Team objects
+      final results = await Future.wait([
+        TeamsService.fetchTeams(),
+        TeamsService.getTeamLeagues(),
+      ]);
+      // print("made it here");
+
+      // ignore: unnecessary_cast
+      final teamMaps = results[0] as List<Map<String, dynamic>>;
+      final teamLeagueMap = results[1] as List<Map<String, String>>;
+      // print(teamMaps);
+      // print(teamLeagueMap);
+      final allFetchedTeams = teamMaps.map((map) => Team.fromMap(map)).toList();
+
+      final teamsInThisLeague =
+          teamLeagueMap
+              .where(
+                (entry) =>
+                    entry['league_name'] != null &&
+                    entry['league_name'] == widget.league,
+              )
+              .map((entry) => entry['team_name'])
+              .where(
+                (teamName) => teamName != null,
+              ) // Ensure team_name is not null
+              .toSet(); // For fast lookup
+
+      final filtered =
+          allFetchedTeams
+              .where((team) => teamsInThisLeague.contains(team.name))
+              .toList();
+
       setState(() {
         isAdmin = adminStatus;
-        allTeams = teams.map((map) => Team.fromMap(map)).toList();
-        filteredTeams = List.from(allTeams);
+        allTeams = filtered;
+        filteredTeams = filtered;
       });
     } catch (e) {
       print('Failed to load teams: $e');

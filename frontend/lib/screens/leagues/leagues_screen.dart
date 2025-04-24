@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/routes.dart';
 import 'league_service.dart';
 import '../../services/auth_service.dart';
 
@@ -210,7 +211,7 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
                 onPressed: () {
                   Navigator.pop(context);
                   // Navigate to the teams screen (this should be a named route or widget)
-                  Navigator.pushNamed(context, '/teams', arguments: league);
+                  Navigator.pushNamed(context, Routes.teams, arguments: league);
                 },
                 child: Text('View Teams'),
               ),
@@ -218,7 +219,11 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
                 onPressed: () {
                   Navigator.pop(context);
                   // Navigate to the matches screen (this should be a named route or widget)
-                  Navigator.pushNamed(context, '/matches', arguments: league);
+                  Navigator.pushNamed(
+                    context,
+                    Routes.matches,
+                    arguments: league,
+                  );
                 },
                 child: Text('View Matches'),
               ),

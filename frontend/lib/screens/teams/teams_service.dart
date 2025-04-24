@@ -119,4 +119,19 @@ class TeamsService {
     );
     return response.statusCode == 204; // No content on successful delete
   }
+
+  static Future<List<Map<String, String>>> getTeamLeagues() async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/team-plays-in-league/'),
+      headers: {'Content-Type': 'application/json'},
+    );
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      return data.map<Map<String, String>>((item) {
+        return {'team_name': item['team_id'], 'league_name': item['league_id']};
+      }).toList();
+    } else {
+      throw Exception('Failed to load team-league pairs');
+    }
+  }
 }
