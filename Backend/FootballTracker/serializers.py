@@ -287,17 +287,16 @@ class PlayerPlaysForTeamSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class TeamPlaysInLeagueSerializer(serializers.ModelSerializer):
-    team = TeamSerializer(read_only=True)
-    team_id = serializers.PrimaryKeyRelatedField(
-        queryset=Team.objects.all(), source='team', write_only=True, required=False
-    )
-    league = LeagueSerializer(read_only=True)
-    league_id = serializers.PrimaryKeyRelatedField(
-        queryset=League.objects.all(), source='league', write_only=True, required=False
-    )
+    # team_name = serializers.CharField(source='team.name', read_only=True)  # Serialize team name
+    # league_name = serializers.CharField(source='league.name', read_only=True)  # Serialize league name
+
+    # # For POST/PUT requests, accept team and league names directly
+    # team_name = serializers.CharField(write_only=True, required=False)
+    # league_name = serializers.CharField(write_only=True, required=False)
+
     class Meta:
         model = TeamPlaysInLeague
-        fields = '__all__'
+        fields = ['team_id', 'league_id']
 
 class MatchHeldInLeagueSerializer(serializers.ModelSerializer):
     match = MatchSerializer(read_only=True)

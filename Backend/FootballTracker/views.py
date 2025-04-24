@@ -539,7 +539,12 @@ class PlayerPlaysForTeamView(APIView):
 class TeamPlaysInLeagueView(APIView):
     def get(self, request):
         team_plays_in_league = TeamPlaysInLeague.objects.all()
+        # print(team_plays_in_league)
+        if not team_plays_in_league:
+            return Response({"error": "No teams or leagues found."}, status=status.HTTP_404_NOT_FOUND)
+        
         serializer = TeamPlaysInLeagueSerializer(team_plays_in_league, many=True)
+        # print(serializer.data)
         return Response(serializer.data)
 
     def post(self, request):
