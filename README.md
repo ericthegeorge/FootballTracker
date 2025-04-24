@@ -141,11 +141,11 @@ To start up your flutter app, just run
 
 It'll prompt you for which device you want to deploy to, to which you should choose Windows (generally, 1). Then you should see your flutter app, and any interaction with the backend should be successful (provided, your code is not bugged).
 
-Happy testing! 😁
+Happy testing! 😎
 
 # For Examiners
 
-Ensure you have setup properly. After setup, you can import the dumpxxx.sql file from this git repo into ur mysql workbench. This is the stub I've created partly manual and partly by webscraping.
+Ensure you have setup properly. After setup, you can import the dumpxxx.sql file from this git repo into your MySQL workbench. This is the stub I've created partly manual and partly by webscraping.
 Alternatively, you can run the webscraper.py in Backend/footballtracker to have some stub data to test on. For a full experience, you may want to add some relation instances by yourself in the manage.py shell, particularly having TeamPlaysInLeague or MatchHeldInLeague instances.  
 
 With this, you can now just run the python server in Backend, and run the flutter app in frontend (that is, you will need to be in those folders for their respective commands).
@@ -154,6 +154,15 @@ With this, you can now just run the python server in Backend, and run the flutte
 
 `flutter run`
 
+If flutter screams at you, you may wanna clean and build to hopefully resolve the errors.
+
+`flutter clean`
+
+`flutter pub get`
+
+You may see our final report for a guide on operation of the application.
+
+Please enjoy 😁 
 
 # Other Notes
 
