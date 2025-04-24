@@ -137,7 +137,7 @@ To start up your flutter app, just run
 
 `flutter run`
 
-It'll prompt you for which device you want to deploy to, just enter the number associated to web or desktop (web might be faster to build and it's also what we'll present). Then you should see your flutter app, and any interaction with the backend should be successful (provided, your code is not bugged).
+It'll prompt you for which device you want to deploy to, to which you should choose Windows (generally, 1). Then you should see your flutter app, and any interaction with the backend should be successful (provided, your code is not bugged).
 
 Happy testing! 😁
 
