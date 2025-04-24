@@ -28,10 +28,13 @@ from .serializers import (
     AdminCanEditTeamSerializer, AdminCanEditMatchSerializer, AdminCanEditLeagueSerializer,
     UserCanBrowseTeamMatchDataSerializer, UserCanBrowsePlayerMatchDataSerializer, UserCanBrowsePlayerSerializer,
     UserCanBrowseTeamSerializer, UserCanBrowseMatchSerializer, UserCanBrowseLeagueSerializer,
-    TeamMatchSerializer, PlayerMatchSerializer
+    TeamMatchSerializer, PlayerMatchSerializer, UserSerializer
 )
 
 import urllib.parse
+from rest_framework.parsers import MultiPartParser, FormParser
+
+# from rest_framework.permissions import AllowAny
 
 
 # class RegisterView(APIView):
@@ -50,20 +53,35 @@ import urllib.parse
 #         })
 
 class RegisterView(APIView):
+    # permission_classes = [AllowAny]
     def post(self, request):
+        print(request.data)
+        print(request.FILES.get('picture'))
         serializer = RegisterSerializer(data=request.data)
+        
         if serializer.is_valid():
+            # Save the user first
             user = serializer.save()
+
+            # Manually handle profile image
+            picture = request.FILES.get('picture')
+            if picture:
+                # Assuming the UserProfile model has a FileField for profile_image
+                profile, created = UserProfile.objects.get_or_create(user=user, defaults={'profile_image': picture})
+                # You can also save the profile object if needed:
+                profile.save()
+
+            # Generate token
             token, created = Token.objects.get_or_create(user=user)
+            
             return Response({
                 'token': token.key,
                 'username': user.username,
-                'is_staff': user.is_staff  # <- this was missing!
+                'is_staff': user.is_staff
             }, status=status.HTTP_201_CREATED)
-        
+
         print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 class LoginView(APIView):
@@ -85,35 +103,117 @@ class LoginView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserProfileView(APIView):
+    parser_classes = [MultiPartParser, FormParser]
+
     def get(self, request):
-        user = request.user
+        username = request.query_params.get('username')
         try:
+            print(username)
+            user = User.objects.get(username=username)
             user_profile = UserProfile.objects.get(user=user)
             serializer = UserProfileSerializer(user_profile)
             return Response(serializer.data)
         except UserProfile.DoesNotExist:
-            return Response({'error': 'User profile not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "User not found"}, status=404)
+
 
     def put(self, request):
-        user = request.user
+        username = request.query_params.get('username')
+        if not username:
+            return Response({'error': 'Username required'}, status=400)
+
         try:
+            user = User.objects.get(username=username)
             user_profile = UserProfile.objects.get(user=user)
-            serializer = UserProfileSerializer(user_profile, data=request.data, partial=True)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=404)
         except UserProfile.DoesNotExist:
-            return Response({'error': 'User profile not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'Profile not found'}, status=404)
+
+        # Build a simple dict out of request.data + request.FILES
+        data = {}
+
+        # Nested user fields:
+        user_data = {}
+        for field in ('username', 'email', 'first_name', 'last_name'):
+            key = f'user.{field}'
+            if key in request.data:
+                # .get() gives you the *first* value in the QueryDict list
+                user_data[field] = request.data.get(key)[0]  # Get the first value
+
+        if user_data:
+            data['user'] = user_data
+
+        # Profile image, if any
+        if 'profile_image' in request.FILES:
+            data['profile_image'] = request.FILES['profile_image']
+        
+        print("Request data:", request.data)
+        print("Request FILES:", request.FILES)
+        print("Cleaned user_data:", user_data)
+        print("Cleaned profile image:", data.get('profile_image'))
+
+        # Now run the serializer
+        serializer = UserProfileSerializer(
+            user_profile,
+            data=data,
+            partial=True,
+            context={'request': request}
+        )
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
 
     def delete(self, request):
-        user = request.user
+        username = request.query_params.get('username')
         try:
+            print(username)
+            user = User.objects.get(username=username)
             user_profile = UserProfile.objects.get(user=user)
             user_profile.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         except UserProfile.DoesNotExist:
             return Response({'error': 'User profile not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+class UserView(APIView):
+
+    def get(self, request):
+        # Get the current authenticated user
+        user = request.user
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
+
+    def put(self, request):
+        # Get the current authenticated user
+        username = request.query_params.get('username')
+        user = User.objects.get(username=username)
+        print(user)
+        print(request.data)
+        # Serialize the data to validate and save
+        serializer = UserSerializer(user, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            print("Serializer is valid. Saving data...")  # Debugging message
+            updated_user = serializer.save()  # Save the updated user data
+            updated_user.refresh_from_db()
+
+            # Check if the save was successful
+            if updated_user:
+                print("User updated successfully")
+                print(updated_user)
+                return Response(serializer.data)  # Return updated user data
+            else:
+                print("Failed to update the user")
+                return Response({"error": "Failed to update user"}, status=400)
+        else:
+            print("Serializer is not valid")
+            print(serializer.errors)  # Print errors for debugging
+            return Response(serializer.errors, status=400)
+
+
 
 class LeagueView(APIView):
     def get(self, request):

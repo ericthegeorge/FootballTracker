@@ -31,7 +31,7 @@ def user_directory_path(instance, filename):
 class UserProfile(models.Model):
     # includes username, password, email, and more
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name="profile")
-    profile_image = models.ImageField(upload_to=user_directory_path, null=True, blank=True)
+    profile_image = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
     
     def __str__(self):
         return f"{self.user.username}'s profile"

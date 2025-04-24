@@ -59,7 +59,7 @@ class AuthService {
       final data = jsonDecode(response.body);
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('token', data['token']);
-      print(data['is_staff']);
+      // print(data['is_staff']);
       await prefs.setBool('is_staff', data['is_staff']);
       await prefs.setString('username', data['username']);
     }
@@ -85,5 +85,95 @@ class AuthService {
   static Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
+  }
+
+  static Future<Map<String, dynamic>?> getProfile() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    final username = prefs.getString(
+      'username',
+    ); // <-- make sure you're storing this at login/signup
+
+    final response = await http.get(
+      Uri.parse(
+        '$baseUrl/user-profile/?username=$username',
+      ), // <-- query parameter
+      headers: {
+        'Authorization': 'Token $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // print(jsonDecode(response.body));
+      return jsonDecode(response.body);
+    } else {
+      print("Failed to fetch profile: ${response.body}");
+      return null;
+    }
+  }
+
+  static Future<void> updateProfile(Map<String, dynamic> userData) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    final oldUsername = prefs.getString('username');
+
+    var uri = Uri.parse('$baseUrl/user/?username=$oldUsername');
+
+    print(userData['user']);
+
+    var response = await http.put(
+      uri,
+      headers: {
+        'Authorization': 'Token $token',
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({
+        'username': userData['user']['username'],
+        'email': userData['user']['email'],
+        'first_name': userData['user']['first_name'],
+        'last_name': userData['user']['last_name'],
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      await prefs.setString('username', userData['user']['username']);
+      await prefs.setString('email', userData['user']['email']);
+      await prefs.setString('first_name', userData['user']['first_name']);
+      await prefs.setString('last_name', userData['user']['last_name']);
+    } else {
+      throw "Failed to update profile";
+    }
+  }
+
+  static Future<void> updateProfileImage(File image) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    final prefsusername = prefs.getString('username');
+
+    var uri = Uri.parse('$baseUrl/user-profile/?username=$prefsusername');
+    var request = http.MultipartRequest('PUT', uri);
+    request.headers['Authorization'] = 'Token $token';
+
+    // Add the profile image to the request
+    request.files.add(
+      await http.MultipartFile.fromPath('profile_image', image.path),
+    );
+
+    // Send the request
+    var streamedResponse = await request.send();
+    var response = await http.Response.fromStream(streamedResponse);
+
+    // Log the response body for debugging
+    print("Response Body: ${response.body}");
+
+    // Check response status and handle success or failure
+    if (response.statusCode == 200) {
+      // Optionally, update the shared preferences or other state if needed
+      print("Profile image updated successfully.");
+    } else {
+      // Handle the error
+      throw "Failed to update profile image. Error: ${response.body}";
+    }
   }
 }
