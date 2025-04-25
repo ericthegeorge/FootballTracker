@@ -489,9 +489,9 @@ class MatchView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-    def put(self, request, pk):
+    def put(self, request, match_id):
         try:
-            matches = Match.objects.get(pk=pk)
+            matches = Match.objects.get(match_id=match_id)
             serializer = MatchSerializer(matches, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
@@ -500,9 +500,9 @@ class MatchView(APIView):
         except Match.DoesNotExist:
             return Response({'error': 'Match not found'}, status=status.HTTP_404_NOT_FOUND)
     
-    def delete(self, request, pk):
+    def delete(self, request, match_id):
         try:
-            matches = Match.objects.get(pk=pk)
+            matches = Match.objects.get(match_id=match_id)
             matches.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         except Match.DoesNotExist:
