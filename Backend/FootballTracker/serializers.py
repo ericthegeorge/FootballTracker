@@ -265,14 +265,6 @@ class ManagerNationalitySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class MatchSerializer(serializers.ModelSerializer):
-    home_team = TeamSerializer(read_only=True)
-    away_team = TeamSerializer(read_only=True)
-    home_team_id = serializers.PrimaryKeyRelatedField(
-        queryset=Team.objects.all(), source='home_team', write_only=True, required=False
-    )
-    away_team_id = serializers.PrimaryKeyRelatedField(
-        queryset=Team.objects.all(), source='away_team', write_only=True, required=False
-    )
     class Meta:
         model = Match
         fields = '__all__'
