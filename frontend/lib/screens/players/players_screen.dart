@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/screens/players/players_view_screen.dart';
 import 'player_service.dart'; //Assuming this fetches player data from your API
 import '../../services/auth_service.dart';
 
@@ -37,6 +36,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
         PlayerService.getPlayerTeams(),
       ]);
 
+      //Ignore unnecessary cast
       final playerMaps = results[0] as List<Map<String, dynamic>>;
       final playerTeamMap = results[1] as List<Map<String, String>>;
       final allFetchedPlayers = playerMaps.map((map) => Player.fromMap(map)).toList();

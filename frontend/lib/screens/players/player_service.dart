@@ -63,17 +63,6 @@ class PlayerService {
     return response.statusCode == 201;
   }
 
-  static Future<bool> deletePlayer(String playerName) async {
-    final encodedName = encodeForUrl(playerName);
-
-    final response = await http.delete(
-      Uri.parse('$baseUrl/players/$encodedName'),
-      headers: {'Content-Type': 'application/json'},
-    );
-
-    return response.statusCode == 204;
-  }
-
   static Future<bool> updatePlayer(
     String oldName, 
     Map<String, dynamic> updatedPlayerData,
@@ -93,4 +82,30 @@ class PlayerService {
 
       return response.statusCode == 200;
     }
+
+    static Future<bool> deletePlayer(String playerName) async {
+    final encodedName = encodeForUrl(playerName);
+
+    final response = await http.delete(
+      Uri.parse('$baseUrl/players/$encodedName'),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    return response.statusCode == 204;
+  }
+
+  static Future<List<Map<String, String>>> getPlayerTeams() async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/player-works-with-team'),
+      headers: {'Content-Type': 'application/json'},
+    );
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      return data.map<Map<String, String>>((item) {
+        return {'player_name': item['player_id'], 'team_name': item['team_id']};
+      }).toList();
+    } else {
+      throw Exception('Failed to load team-league pairs');
+    }
+  }
 }
