@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class PlayerService {
   static const String baseUrl = 'http://127.0.0.1:8000/api';
@@ -34,8 +35,8 @@ class PlayerService {
           'height': player['height'],
           'yellow_cards': player['yellow_cards'],
           'red_cards': player['red_cards'],
-          'playing_team': player['playing_team'],
-          'owning_team': player['owning_team'],
+          'playing_team_id': player['playing_team_id'],
+          'owning_team_id': player['owning_team_id'],
         };
       }).toList();
       
