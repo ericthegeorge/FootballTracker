@@ -31,6 +31,7 @@ urlpatterns = [
     path('player-positions/', PlayerPositionView.as_view(), name = 'player_positions'),
     path('manager-nationalities/', ManagerNationalityView.as_view(), name = 'manager_nationalities'),
     path('matches/', MatchView.as_view(), name = 'matches'),
+    path('matches/<int:match_id>/', MatchView.as_view(), name = 'matches'),
     path('match-referee-nationalities/', MatchRefereeNationalityView.as_view(), name = 'match_referee_nationalities'),
     path('team-match-data/', TeamMatchDataView.as_view(), name = 'team_match_data'),
     path('player-match-data/', PlayerMatchDataView.as_view(), name = 'player_match_data'),
