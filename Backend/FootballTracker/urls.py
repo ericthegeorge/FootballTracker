@@ -11,17 +11,19 @@ from .views import (
     AdminCanEditTeamView, AdminCanEditMatchView, AdminCanEditLeagueView,
     UserCanBrowseTeamMatchDataView, UserCanBrowsePlayerMatchDataView, UserCanBrowsePlayerView,
     UserCanBrowseTeamView, UserCanBrowseMatchView, UserCanBrowseLeagueView,
-    TeamMatchView, PlayerMatchView
+    TeamMatchView, PlayerMatchView, UserView
 )
 
 urlpatterns = [
     # EXAMPLE URL using the view as response
     path('register/', RegisterView.as_view(), name = 'register'),
     path('login/', LoginView.as_view(), name = 'login'),
+    path('user/', UserView.as_view(), name = 'user'),
     path('user-profile/', UserProfileView.as_view(), name = 'user_profile'),
     path('leagues/<str:name>', LeagueView.as_view(), name = 'leagues'),
     path('leagues/', LeagueView.as_view(), name = 'leagues'),
     path('teams/', TeamView.as_view(), name = 'teams'),
+    path('teams/<str:name>/', TeamView.as_view(), name = 'teams'),  # for PUT and DELETE
     path('players/', PlayerView.as_view(), name = 'players'),
     path('outfield-players/', OutfieldPlayerView.as_view(), name = 'outfield_players'),
     path('goalkeepers/', GoalkeeperView.as_view(), name = 'goalkeepers'),

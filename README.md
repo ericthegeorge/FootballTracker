@@ -9,6 +9,8 @@ Backend: Django\
 Database: MySQL local\
 RESTful API
 
+For examiners, please follow the setup and then head to the `For Examiners` section.
+
 Please add your design boards, drafts, or other ideas you have here.
 
 All work should be committed to specific branches, and merged onto main. BE WARY OF MERGE CONFLICTS. Don't accept merges easily and overwrite another person's work. Ideally someone should review all pull requests, but this will not be enforced.
@@ -137,11 +139,35 @@ To start up your flutter app, just run
 
 `flutter run`
 
-It'll prompt you for which device you want to deploy to, just enter the number associated to web or desktop (web might be faster to build and it's also what we'll present). Then you should see your flutter app, and any interaction with the backend should be successful (provided, your code is not bugged).
+It'll prompt you for which device you want to deploy to, to which you should choose Windows (generally, 1). Then you should see your flutter app, and any interaction with the backend should be successful (provided, your code is not bugged).
 
-Happy testing! 😁
+Happy testing! 😎
+
+# For Examiners
+
+Ensure you have setup properly. After setup, you can import the dumpxxx.sql file from this git repo into your MySQL workbench. This is the stub I've created partly manual and partly by webscraping.
+Alternatively, you can run the webscraper.py in Backend/footballtracker to have some stub data to test on. For a full experience, you may want to add some relation instances by yourself in the manage.py shell, particularly having TeamPlaysInLeague or MatchHeldInLeague instances.  
+
+With this, you can now just run the python server in Backend, and run the flutter app in frontend (that is, you will need to be in those folders for their respective commands).
+
+`python manage.py runserver`
+
+`flutter run`
+
+If flutter screams at you, you may need to clean and build to hopefully resolve the errors.
+
+`flutter clean`
+
+`flutter pub get`
+
+You may see our final report for a guide on operation of the application.
+
+Please enjoy! 😁 
 
 # Other Notes
+
+Common errors in building: football tracker module not found. \
+Fix: If you're footballtracker folder is in UpperPascalCase, rename it to lowerpascalcase.
 
 We should update this readme if anyone finds issues with setup or development, or finds anything else to contribute. It's important we do this so the information is shared and we can work efficiently. It's like commenting but 10x better (worse). But it's important 😭.
 

@@ -32,7 +32,7 @@ DEBUG = True
 
 # AUTH_USER_MODEL = 'footballtracker.CustomUser'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -51,6 +51,12 @@ INSTALLED_APPS = [
     'corsheaders',
 
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

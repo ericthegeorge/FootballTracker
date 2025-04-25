@@ -84,7 +84,8 @@ class Routes {
       case leagues:
         return MaterialPageRoute(builder: (_) => LeaguesScreen());
       case teams:
-        return MaterialPageRoute(builder: (_) => TeamsScreen());
+        final league = settings.arguments as String?;
+        return MaterialPageRoute(builder: (_) => TeamsScreen(league: league));
       case players:
         return MaterialPageRoute(builder: (_) => PlayersScreen());
       case matches:

@@ -36,9 +36,10 @@ class RegisterSerializer(serializers.ModelSerializer):
         )
         # picture = validated_data['picture']
         picture = validated_data.pop('picture', None)  # <- pop to prevent issues
+        print(picture)
         if picture:
                 profile, _ = UserProfile.objects.get_or_create(user=user)
-                profile.picture = picture
+                profile.profile_image = picture
                 profile.save()
         is_staff = validated_data.pop('is_staff', None)
         user.is_staff = is_staff
@@ -93,7 +94,9 @@ class RegisterSerializer(serializers.ModelSerializer):
 
         
         user.save()
-        print(user.is_staff)
+        # print(user.is_staff)
+        print(profile.profile_image)
+
         return user
     
 class LoginSerializer(serializers.Serializer):
@@ -163,11 +166,43 @@ class LoginSerializer(serializers.Serializer):
 
         return data
     
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'first_name', 'last_name']
+
 class UserProfileSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField(read_only=True)
+    user = UserSerializer()
+    profile_image_url = serializers.SerializerMethodField()
+
     class Meta:
         model = UserProfile
-        fields = ['id', 'user', 'picture']
+        fields = ['user', 'profile_image', 'profile_image_url']  # Add profile_image to fields
+
+    def get_profile_image_url(self, obj):
+        request = self.context.get('request')
+        if obj.profile_image and hasattr(obj.profile_image, 'url'):
+            return request.build_absolute_uri(obj.profile_image.url) if request else obj.profile_image.url
+        return None
+    
+    def update(self, instance, validated_data):
+        user_data = validated_data.pop('user', {})  # Extract nested user data
+        user = instance.user
+
+        # Update User model fields
+        for attr, value in user_data.items():
+            setattr(user, attr, value)
+        user.save()
+
+        # Update UserProfile fields (including profile_image)
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        return instance
+
+
+
 
 class LeagueSerializer(serializers.ModelSerializer):
     class Meta:
@@ -175,10 +210,10 @@ class LeagueSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class TeamSerializer(serializers.ModelSerializer):
-    league = LeagueSerializer(read_only=True)
-    league_id = serializers.PrimaryKeyRelatedField(
-        queryset=League.objects.all(), source='league', write_only=True, required=False
-    )
+    # league = LeagueSerializer(read_only=True)
+    # league_id = serializers.PrimaryKeyRelatedField(
+    #     queryset=League.objects.all(), source='league', write_only=True, required=False
+    # )
     class Meta:
         model = Team
         fields = '__all__'
@@ -287,17 +322,16 @@ class PlayerPlaysForTeamSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class TeamPlaysInLeagueSerializer(serializers.ModelSerializer):
-    team = TeamSerializer(read_only=True)
-    team_id = serializers.PrimaryKeyRelatedField(
-        queryset=Team.objects.all(), source='team', write_only=True, required=False
-    )
-    league = LeagueSerializer(read_only=True)
-    league_id = serializers.PrimaryKeyRelatedField(
-        queryset=League.objects.all(), source='league', write_only=True, required=False
-    )
+    # team_name = serializers.CharField(source='team.name', read_only=True)  # Serialize team name
+    # league_name = serializers.CharField(source='league.name', read_only=True)  # Serialize league name
+
+    # # For POST/PUT requests, accept team and league names directly
+    # team_name = serializers.CharField(write_only=True, required=False)
+    # league_name = serializers.CharField(write_only=True, required=False)
+
     class Meta:
         model = TeamPlaysInLeague
-        fields = '__all__'
+        fields = ['team_id', 'league_id']
 
 class MatchHeldInLeagueSerializer(serializers.ModelSerializer):
     match = MatchSerializer(read_only=True)
